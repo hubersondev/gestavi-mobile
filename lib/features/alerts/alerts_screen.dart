@@ -103,7 +103,7 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
               )),
             )
             .value
-            ?.where((s) => s.quantity <= s.minQuantity)
+            ?.where(isLowStock)
             .toList() ??
         const <CachedStock>[];
     final overdueVaccinations =

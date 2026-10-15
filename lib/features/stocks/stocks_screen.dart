@@ -92,8 +92,8 @@ class _StocksScreenState extends ConsumerState<StocksScreen> {
 
           final sorted = [...list]
             ..sort((a, b) {
-              final lowA = a.quantity <= a.minQuantity ? 0 : 1;
-              final lowB = b.quantity <= b.minQuantity ? 0 : 1;
+              final lowA = isLowStock(a) ? 0 : 1;
+              final lowB = isLowStock(b) ? 0 : 1;
 
               return lowA != lowB ? lowA - lowB : a.name.compareTo(b.name);
             });
@@ -129,7 +129,7 @@ class _StockTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isLow = stock.quantity <= stock.minQuantity;
+    final isLow = isLowStock(stock);
     final color = isLow ? GestaviTheme.danger : GestaviTheme.primary;
 
     return Card(

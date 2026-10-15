@@ -152,6 +152,11 @@ class StockRepository {
   );
 }
 
+/// Sous le seuil ; un seuil à zéro ne déclenche jamais d'alerte (stock d'œufs d'une ferme sans
+/// pondeuses, par exemple).
+bool isLowStock(CachedStock stock) =>
+    stock.minQuantity > 0 && stock.quantity <= stock.minQuantity;
+
 /// Stock débité par la vente d'un produit sur une ferme : stock d'œufs de la ferme, ou stock lié.
 CachedStock? trackedStockFor(
   CachedProduct product,
