@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "gestavi_mobile (téléphone réel, PC 192.168.1.26)",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": ["--dart-define=API_URL=http://192.168.1.26:8000"]
+    },
+    {
+      "name": "gestavi_mobile (émulateur)",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
+}
