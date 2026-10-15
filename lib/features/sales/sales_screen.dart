@@ -6,6 +6,7 @@ import '../../core/db/app_database.dart';
 import '../auth/auth_controller.dart';
 import '../flocks/flock_repository.dart' show networkMessage;
 import 'sale_form_screen.dart';
+import 'sale_payment_sheet.dart';
 import 'sale_repository.dart';
 
 /// Ventes récentes de la ferme et ventes saisies sur le téléphone en attente d'envoi.
@@ -76,6 +77,9 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
     );
     final sales = ref.watch(salesProvider(scope));
     final canSell = session.membership!.permissions.contains('sales.create');
+    final canCollect = session.membership!.permissions.contains(
+      'sales.record_payment',
+    );
 
     return Scaffold(
       body: RefreshIndicator(
@@ -94,7 +98,16 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 88),
                   itemCount: list.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 10),
-                  itemBuilder: (context, index) => _SaleTile(sale: list[index]),
+                  itemBuilder: (context, index) => _SaleTile(
+                    sale: list[index],
+                    onTap:
+                        canCollect &&
+                            list[index].serverId != null &&
+                            (list[index].status == 'pending' ||
+                                list[index].status == 'partial')
+                        ? () => SalePaymentSheet.show(context, list[index])
+                        : null,
+                  ),
                 ),
         ),
       ),
@@ -112,9 +125,10 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
 }
 
 class _SaleTile extends StatelessWidget {
-  const _SaleTile({required this.sale});
+  const _SaleTile({required this.sale, this.onTap});
 
   final CachedSale sale;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -128,71 +142,84 @@ class _SaleTile extends StatelessWidget {
     };
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    sale.customerName ?? 'Client comptant',
-                    style: theme.textTheme.titleMedium,
-                    overflow: TextOverflow.ellipsis,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GestaviTheme.radiusSurface),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      sale.customerName ?? 'Client comptant',
+                      style: theme.textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                Text(
-                  formatXof(sale.total),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            if (sale.summary?.isNotEmpty == true) ...[
-              const SizedBox(height: 4),
-              Text(
-                sale.summary!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  [
-                    _shortDate(sale.saleDate),
-                    if (sale.invoiceNumber != null) sale.invoiceNumber!,
-                  ].join(' · '),
-                  style: theme.textTheme.bodySmall,
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    saleStatusLabel(sale.status),
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 12,
+                  Text(
+                    formatXof(sale.total),
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                ],
+              ),
+              if (sale.summary?.isNotEmpty == true) ...[
+                const SizedBox(height: 4),
+                Text(
+                  sale.summary!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
-            ),
-          ],
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    [
+                      _shortDate(sale.saleDate),
+                      if (sale.invoiceNumber != null) sale.invoiceNumber!,
+                    ].join(' · '),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      saleStatusLabel(sale.status),
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (onTap != null) ...[
+                const SizedBox(height: 6),
+                Text(
+                  'Reste dû ${formatXof(sale.total - sale.paid)} · appuyer pour encaisser',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: GestaviTheme.info,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

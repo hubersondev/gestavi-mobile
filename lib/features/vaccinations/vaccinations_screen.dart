@@ -202,11 +202,7 @@ class _VaccinationTile extends StatelessWidget {
 
 /// Saisie retournée par la boîte de validation.
 class _DoneInput {
-  const _DoneInput({
-    required this.date,
-    this.birdsTreated,
-    this.observations,
-  });
+  const _DoneInput({required this.date, this.birdsTreated, this.observations});
 
   final DateTime date;
   final int? birdsTreated;

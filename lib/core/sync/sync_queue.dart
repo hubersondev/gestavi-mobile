@@ -97,9 +97,9 @@ class SyncQueueRepository {
     var processed = 0;
 
     // Ventes et mouvements de stock passent un par un sur leur point d'entrée idempotent
-    final singles = entries.where((e) => singleEndpoints.containsKey(e.type));
+    final singles = entries.where((e) => singleTypes.contains(e.type));
     final batched = entries
-        .where((e) => !singleEndpoints.containsKey(e.type))
+        .where((e) => !singleTypes.contains(e.type))
         .toList();
 
     for (final entry in singles) {
@@ -158,11 +158,17 @@ class SyncQueueRepository {
     return processed;
   }
 
-  /// Types envoyés un par un, avec le chemin de leur point d'entrée.
-  static const singleEndpoints = <String, String>{
-    'sale': '/sales',
-    'stock_movement': '/stock-movements',
-  };
+  /// Types envoyés un par un sur leur propre point d'entrée (les autres partent en lot sur /sync).
+  static const singleTypes = {'sale', 'stock_movement', 'sale_payment'};
+
+  /// Chemin du point d'entrée d'une saisie unitaire, relatif à l'organisation.
+  static String endpointFor(String type, Map<String, dynamic> payload) =>
+      switch (type) {
+        'sale' => '/sales',
+        'stock_movement' => '/stock-movements',
+        'sale_payment' => '/sales/${payload['sale_id']}/payments',
+        _ => throw ArgumentError.value(type, 'type', 'pas de point unitaire'),
+      };
 
   /// Envoie une saisie seule ; 201/200 → created (ou duplicate), refus métier (422/403) → rejected,
   /// réseau → l'erreur remonte et la file reste intacte.
@@ -172,9 +178,10 @@ class SyncQueueRepository {
     int? subjectId;
 
     try {
+      final payload = decodePayload(entry.payload);
       final response = await _api.post(
-        '/organisations/$organisationSlug${singleEndpoints[entry.type]}',
-        body: jsonDecode(entry.payload) as Map<String, dynamic>,
+        '/organisations/$organisationSlug${endpointFor(entry.type, payload)}',
+        body: payload,
       );
       status = response['status'] as String? ?? 'created';
       final data = response['data'] as Map<String, dynamic>? ?? response;
@@ -230,6 +237,10 @@ class SyncQueueRepository {
     }
   }
 }
+
+/// Corps JSON d'une saisie conservée dans la file.
+Map<String, dynamic> decodePayload(String payload) =>
+    jsonDecode(payload) as Map<String, dynamic>;
 
 typedef SyncedCallback = Future<void> Function(
   int organisationId,

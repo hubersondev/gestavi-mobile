@@ -275,6 +275,62 @@ class SaleRepository {
     return clientUuid;
   }
 
+  /// Encaissement d'une vente déjà synchronisée : file (POST /sales/{id}/payments, idempotent)
+  /// puis montant reçu reflété localement. Retourne l'identifiant client.
+  Future<String> recordPayment({
+    required int organisationId,
+    required CachedSale sale,
+    required double amount,
+    required String method,
+    DateTime? paidAt,
+  }) async {
+    final saleId = sale.serverId;
+
+    if (saleId == null) {
+      throw StateError(
+        'Une vente non synchronisée ne peut pas être encaissée.',
+      );
+    }
+
+    final clientUuid = _uuid.v4();
+    final date = paidAt ?? DateTime.now();
+
+    await _queue.enqueue(
+      organisationId: organisationId,
+      type: 'sale_payment',
+      payload: {
+        'client_uuid': clientUuid,
+        'sale_id': saleId,
+        'amount': amount,
+        'method': method,
+        'paid_at': _iso(date),
+      },
+      recordedAt: date,
+      clientUuid: clientUuid,
+    );
+
+    final paid = sale.paid + amount;
+    await (_db.update(
+      _db.cachedSales,
+    )..where((s) => s.key.equals(sale.key))).write(
+      CachedSalesCompanion(
+        paid: Value(paid),
+        status: Value(paid >= sale.total - 0.01 ? 'paid' : 'partial'),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
+
+    return clientUuid;
+  }
+
+  /// La vente renvoyée par le serveur remplace la version en cache.
+  Future<void> applyServerSale(
+    int organisationId,
+    Map<String, dynamic> serverSale,
+  ) => _db
+      .into(_db.cachedSales)
+      .insertOnConflictUpdate(_serverSale(organisationId, serverSale));
+
   /// Après synchronisation, la vente locale prend l'identité du serveur.
   Future<void> markSynced({
     required String clientUuid,
@@ -378,6 +434,11 @@ final saleRepositoryProvider = Provider<SaleRepository>((ref) {
         organisationId: organisationId,
         clientUuid: clientUuid,
         serverSale: response['data'] as Map<String, dynamic>? ?? response,
+      );
+  queue.onSynced['sale_payment'] = (organisationId, clientUuid, response) =>
+      repository.applyServerSale(
+        organisationId,
+        response['data'] as Map<String, dynamic>? ?? response,
       );
 
   return repository;

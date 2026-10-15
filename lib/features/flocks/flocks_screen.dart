@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../../core/db/app_database.dart';
 import '../auth/auth_controller.dart';
+import '../vaccinations/vaccination_repository.dart';
+import '../vaccinations/vaccinations_screen.dart';
 import 'daily_record_screen.dart';
 import 'flock_repository.dart';
 
@@ -94,16 +96,28 @@ class _FlocksScreenState extends ConsumerState<FlocksScreen> {
   }
 }
 
-class _FlockCard extends StatelessWidget {
+class _FlockCard extends ConsumerWidget {
   const _FlockCard({required this.flock});
 
   final CachedFlock flock;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final today = _today();
     final recordedToday = flock.lastRecordDate == today;
+    final vaccinations =
+        ref
+            .watch(
+              vaccinationsTodoProvider((
+                organisationId: flock.organisationId,
+                farmId: null,
+                flockId: flock.id,
+              )),
+            )
+            .value ??
+        const [];
+    final overdue = vaccinations.where((v) => v.isOverdue).length;
 
     return Card(
       child: InkWell(
@@ -159,6 +173,44 @@ class _FlockCard extends StatelessWidget {
                     value: flock.lastRecordDate == null
                         ? 'jamais'
                         : _shortDate(flock.lastRecordDate!),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => VaccinationsScreen(flock: flock),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.vaccines_outlined,
+                        size: 18,
+                        color: overdue > 0 ? GestaviTheme.danger : null,
+                      ),
+                      label: Text(
+                        vaccinations.isEmpty
+                            ? 'Vaccins'
+                            : overdue > 0
+                            ? 'Vaccins · $overdue en retard'
+                            : 'Vaccins · ${vaccinations.length} à faire',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.tonalIcon(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => DailyRecordScreen(flock: flock),
+                        ),
+                      ),
+                      icon: const Icon(Icons.edit_note, size: 18),
+                      label: const Text('Relevé'),
+                    ),
                   ),
                 ],
               ),

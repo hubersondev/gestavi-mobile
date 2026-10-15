@@ -6,6 +6,7 @@ import '../../core/db/app_database.dart';
 import '../auth/auth_controller.dart';
 import '../flocks/flock_repository.dart' show networkMessage;
 import '../stocks/stock_repository.dart';
+import '../vaccinations/vaccination_repository.dart';
 import 'notification_repository.dart';
 
 /// Alertes : stocks sous le seuil (calculés depuis le cache, donc à jour même sans réseau)
@@ -27,8 +28,19 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
   }
 
   Future<void> _refresh({bool silent = false}) async {
+    final session = ref.read(authControllerProvider).value;
+
     try {
       await ref.read(notificationRepositoryProvider).refresh();
+
+      if (session is Authenticated && session.membership != null) {
+        await ref
+            .read(vaccinationRepositoryProvider)
+            .refresh(
+              organisationId: session.membership!.organisationId,
+              organisationSlug: session.membership!.slug,
+            );
+      }
     } catch (error) {
       if (!silent && mounted) {
         _snack(networkMessage(error) ?? 'Rafraîchissement impossible : $error');
@@ -94,6 +106,19 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
             ?.where((s) => s.quantity <= s.minQuantity)
             .toList() ??
         const <CachedStock>[];
+    final overdueVaccinations =
+        ref
+            .watch(
+              vaccinationsTodoProvider((
+                organisationId: session.membership!.organisationId,
+                farmId: session.farmId,
+                flockId: null,
+              )),
+            )
+            .value
+            ?.where((v) => v.isOverdue)
+            .toList() ??
+        const <CachedVaccination>[];
     final notifications = ref.watch(notificationsProvider).value ?? const [];
     final unread = notifications.where((n) => n.readAt == null).length;
 
@@ -115,6 +140,24 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                   title: Text(stock.name),
                   subtitle: Text(
                     'Reste ${formatQuantity(stock.quantity)} ${stock.unit}, seuil ${formatQuantity(stock.minQuantity)}',
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
+          ],
+          if (overdueVaccinations.isNotEmpty) ...[
+            Text('Vaccinations en retard', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            for (final vaccination in overdueVaccinations)
+              Card(
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.vaccines_outlined,
+                    color: GestaviTheme.danger,
+                  ),
+                  title: Text(vaccination.treatmentName),
+                  subtitle: Text(
+                    '${vaccination.flockCode ?? 'Bande ${vaccination.flockId}'} · prévue le ${_frDate(vaccination.scheduledDate)}',
                   ),
                 ),
               ),
@@ -234,4 +277,10 @@ class _NotificationTile extends StatelessWidget {
 
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
   }
+}
+
+String _frDate(String isoDate) {
+  final parts = isoDate.split('-');
+
+  return parts.length == 3 ? '${parts[2]}/${parts[1]}/${parts[0]}' : isoDate;
 }
