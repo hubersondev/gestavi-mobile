@@ -5066,6 +5066,933 @@ class CachedVaccinationsCompanion extends UpdateCompanion<CachedVaccination> {
   }
 }
 
+class $CachedDailyRecordsTable extends CachedDailyRecords
+    with TableInfo<$CachedDailyRecordsTable, CachedDailyRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedDailyRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _organisationIdMeta = const VerificationMeta(
+    'organisationId',
+  );
+  @override
+  late final GeneratedColumn<int> organisationId = GeneratedColumn<int>(
+    'organisation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flockIdMeta = const VerificationMeta(
+    'flockId',
+  );
+  @override
+  late final GeneratedColumn<int> flockId = GeneratedColumn<int>(
+    'flock_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordDateMeta = const VerificationMeta(
+    'recordDate',
+  );
+  @override
+  late final GeneratedColumn<String> recordDate = GeneratedColumn<String>(
+    'record_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _serverIdMeta = const VerificationMeta(
+    'serverId',
+  );
+  @override
+  late final GeneratedColumn<int> serverId = GeneratedColumn<int>(
+    'server_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clientUuidMeta = const VerificationMeta(
+    'clientUuid',
+  );
+  @override
+  late final GeneratedColumn<String> clientUuid = GeneratedColumn<String>(
+    'client_uuid',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mortalityMeta = const VerificationMeta(
+    'mortality',
+  );
+  @override
+  late final GeneratedColumn<int> mortality = GeneratedColumn<int>(
+    'mortality',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _cullsMeta = const VerificationMeta('culls');
+  @override
+  late final GeneratedColumn<int> culls = GeneratedColumn<int>(
+    'culls',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _eggsCollectedMeta = const VerificationMeta(
+    'eggsCollected',
+  );
+  @override
+  late final GeneratedColumn<int> eggsCollected = GeneratedColumn<int>(
+    'eggs_collected',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _eggsBrokenMeta = const VerificationMeta(
+    'eggsBroken',
+  );
+  @override
+  late final GeneratedColumn<int> eggsBroken = GeneratedColumn<int>(
+    'eggs_broken',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _feedKgMeta = const VerificationMeta('feedKg');
+  @override
+  late final GeneratedColumn<double> feedKg = GeneratedColumn<double>(
+    'feed_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _waterLMeta = const VerificationMeta('waterL');
+  @override
+  late final GeneratedColumn<double> waterL = GeneratedColumn<double>(
+    'water_l',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _averageWeightGMeta = const VerificationMeta(
+    'averageWeightG',
+  );
+  @override
+  late final GeneratedColumn<double> averageWeightG = GeneratedColumn<double>(
+    'average_weight_g',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _birdsWeighedMeta = const VerificationMeta(
+    'birdsWeighed',
+  );
+  @override
+  late final GeneratedColumn<int> birdsWeighed = GeneratedColumn<int>(
+    'birds_weighed',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    key,
+    organisationId,
+    flockId,
+    recordDate,
+    serverId,
+    clientUuid,
+    mortality,
+    culls,
+    eggsCollected,
+    eggsBroken,
+    feedKg,
+    waterL,
+    averageWeightG,
+    birdsWeighed,
+    notes,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_daily_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedDailyRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('organisation_id')) {
+      context.handle(
+        _organisationIdMeta,
+        organisationId.isAcceptableOrUnknown(
+          data['organisation_id']!,
+          _organisationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_organisationIdMeta);
+    }
+    if (data.containsKey('flock_id')) {
+      context.handle(
+        _flockIdMeta,
+        flockId.isAcceptableOrUnknown(data['flock_id']!, _flockIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flockIdMeta);
+    }
+    if (data.containsKey('record_date')) {
+      context.handle(
+        _recordDateMeta,
+        recordDate.isAcceptableOrUnknown(data['record_date']!, _recordDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordDateMeta);
+    }
+    if (data.containsKey('server_id')) {
+      context.handle(
+        _serverIdMeta,
+        serverId.isAcceptableOrUnknown(data['server_id']!, _serverIdMeta),
+      );
+    }
+    if (data.containsKey('client_uuid')) {
+      context.handle(
+        _clientUuidMeta,
+        clientUuid.isAcceptableOrUnknown(data['client_uuid']!, _clientUuidMeta),
+      );
+    }
+    if (data.containsKey('mortality')) {
+      context.handle(
+        _mortalityMeta,
+        mortality.isAcceptableOrUnknown(data['mortality']!, _mortalityMeta),
+      );
+    }
+    if (data.containsKey('culls')) {
+      context.handle(
+        _cullsMeta,
+        culls.isAcceptableOrUnknown(data['culls']!, _cullsMeta),
+      );
+    }
+    if (data.containsKey('eggs_collected')) {
+      context.handle(
+        _eggsCollectedMeta,
+        eggsCollected.isAcceptableOrUnknown(
+          data['eggs_collected']!,
+          _eggsCollectedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('eggs_broken')) {
+      context.handle(
+        _eggsBrokenMeta,
+        eggsBroken.isAcceptableOrUnknown(data['eggs_broken']!, _eggsBrokenMeta),
+      );
+    }
+    if (data.containsKey('feed_kg')) {
+      context.handle(
+        _feedKgMeta,
+        feedKg.isAcceptableOrUnknown(data['feed_kg']!, _feedKgMeta),
+      );
+    }
+    if (data.containsKey('water_l')) {
+      context.handle(
+        _waterLMeta,
+        waterL.isAcceptableOrUnknown(data['water_l']!, _waterLMeta),
+      );
+    }
+    if (data.containsKey('average_weight_g')) {
+      context.handle(
+        _averageWeightGMeta,
+        averageWeightG.isAcceptableOrUnknown(
+          data['average_weight_g']!,
+          _averageWeightGMeta,
+        ),
+      );
+    }
+    if (data.containsKey('birds_weighed')) {
+      context.handle(
+        _birdsWeighedMeta,
+        birdsWeighed.isAcceptableOrUnknown(
+          data['birds_weighed']!,
+          _birdsWeighedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CachedDailyRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedDailyRecord(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      organisationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}organisation_id'],
+      )!,
+      flockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}flock_id'],
+      )!,
+      recordDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_date'],
+      )!,
+      serverId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_id'],
+      ),
+      clientUuid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_uuid'],
+      ),
+      mortality: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}mortality'],
+      )!,
+      culls: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}culls'],
+      )!,
+      eggsCollected: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}eggs_collected'],
+      ),
+      eggsBroken: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}eggs_broken'],
+      ),
+      feedKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}feed_kg'],
+      ),
+      waterL: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}water_l'],
+      ),
+      averageWeightG: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}average_weight_g'],
+      ),
+      birdsWeighed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}birds_weighed'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedDailyRecordsTable createAlias(String alias) {
+    return $CachedDailyRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class CachedDailyRecord extends DataClass
+    implements Insertable<CachedDailyRecord> {
+  final String key;
+  final int organisationId;
+  final int flockId;
+  final String recordDate;
+  final int? serverId;
+  final String? clientUuid;
+  final int mortality;
+  final int culls;
+  final int? eggsCollected;
+  final int? eggsBroken;
+  final double? feedKg;
+  final double? waterL;
+  final double? averageWeightG;
+  final int? birdsWeighed;
+  final String? notes;
+  final DateTime updatedAt;
+  const CachedDailyRecord({
+    required this.key,
+    required this.organisationId,
+    required this.flockId,
+    required this.recordDate,
+    this.serverId,
+    this.clientUuid,
+    required this.mortality,
+    required this.culls,
+    this.eggsCollected,
+    this.eggsBroken,
+    this.feedKg,
+    this.waterL,
+    this.averageWeightG,
+    this.birdsWeighed,
+    this.notes,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['organisation_id'] = Variable<int>(organisationId);
+    map['flock_id'] = Variable<int>(flockId);
+    map['record_date'] = Variable<String>(recordDate);
+    if (!nullToAbsent || serverId != null) {
+      map['server_id'] = Variable<int>(serverId);
+    }
+    if (!nullToAbsent || clientUuid != null) {
+      map['client_uuid'] = Variable<String>(clientUuid);
+    }
+    map['mortality'] = Variable<int>(mortality);
+    map['culls'] = Variable<int>(culls);
+    if (!nullToAbsent || eggsCollected != null) {
+      map['eggs_collected'] = Variable<int>(eggsCollected);
+    }
+    if (!nullToAbsent || eggsBroken != null) {
+      map['eggs_broken'] = Variable<int>(eggsBroken);
+    }
+    if (!nullToAbsent || feedKg != null) {
+      map['feed_kg'] = Variable<double>(feedKg);
+    }
+    if (!nullToAbsent || waterL != null) {
+      map['water_l'] = Variable<double>(waterL);
+    }
+    if (!nullToAbsent || averageWeightG != null) {
+      map['average_weight_g'] = Variable<double>(averageWeightG);
+    }
+    if (!nullToAbsent || birdsWeighed != null) {
+      map['birds_weighed'] = Variable<int>(birdsWeighed);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CachedDailyRecordsCompanion toCompanion(bool nullToAbsent) {
+    return CachedDailyRecordsCompanion(
+      key: Value(key),
+      organisationId: Value(organisationId),
+      flockId: Value(flockId),
+      recordDate: Value(recordDate),
+      serverId: serverId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverId),
+      clientUuid: clientUuid == null && nullToAbsent
+          ? const Value.absent()
+          : Value(clientUuid),
+      mortality: Value(mortality),
+      culls: Value(culls),
+      eggsCollected: eggsCollected == null && nullToAbsent
+          ? const Value.absent()
+          : Value(eggsCollected),
+      eggsBroken: eggsBroken == null && nullToAbsent
+          ? const Value.absent()
+          : Value(eggsBroken),
+      feedKg: feedKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(feedKg),
+      waterL: waterL == null && nullToAbsent
+          ? const Value.absent()
+          : Value(waterL),
+      averageWeightG: averageWeightG == null && nullToAbsent
+          ? const Value.absent()
+          : Value(averageWeightG),
+      birdsWeighed: birdsWeighed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(birdsWeighed),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CachedDailyRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedDailyRecord(
+      key: serializer.fromJson<String>(json['key']),
+      organisationId: serializer.fromJson<int>(json['organisationId']),
+      flockId: serializer.fromJson<int>(json['flockId']),
+      recordDate: serializer.fromJson<String>(json['recordDate']),
+      serverId: serializer.fromJson<int?>(json['serverId']),
+      clientUuid: serializer.fromJson<String?>(json['clientUuid']),
+      mortality: serializer.fromJson<int>(json['mortality']),
+      culls: serializer.fromJson<int>(json['culls']),
+      eggsCollected: serializer.fromJson<int?>(json['eggsCollected']),
+      eggsBroken: serializer.fromJson<int?>(json['eggsBroken']),
+      feedKg: serializer.fromJson<double?>(json['feedKg']),
+      waterL: serializer.fromJson<double?>(json['waterL']),
+      averageWeightG: serializer.fromJson<double?>(json['averageWeightG']),
+      birdsWeighed: serializer.fromJson<int?>(json['birdsWeighed']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'organisationId': serializer.toJson<int>(organisationId),
+      'flockId': serializer.toJson<int>(flockId),
+      'recordDate': serializer.toJson<String>(recordDate),
+      'serverId': serializer.toJson<int?>(serverId),
+      'clientUuid': serializer.toJson<String?>(clientUuid),
+      'mortality': serializer.toJson<int>(mortality),
+      'culls': serializer.toJson<int>(culls),
+      'eggsCollected': serializer.toJson<int?>(eggsCollected),
+      'eggsBroken': serializer.toJson<int?>(eggsBroken),
+      'feedKg': serializer.toJson<double?>(feedKg),
+      'waterL': serializer.toJson<double?>(waterL),
+      'averageWeightG': serializer.toJson<double?>(averageWeightG),
+      'birdsWeighed': serializer.toJson<int?>(birdsWeighed),
+      'notes': serializer.toJson<String?>(notes),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CachedDailyRecord copyWith({
+    String? key,
+    int? organisationId,
+    int? flockId,
+    String? recordDate,
+    Value<int?> serverId = const Value.absent(),
+    Value<String?> clientUuid = const Value.absent(),
+    int? mortality,
+    int? culls,
+    Value<int?> eggsCollected = const Value.absent(),
+    Value<int?> eggsBroken = const Value.absent(),
+    Value<double?> feedKg = const Value.absent(),
+    Value<double?> waterL = const Value.absent(),
+    Value<double?> averageWeightG = const Value.absent(),
+    Value<int?> birdsWeighed = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? updatedAt,
+  }) => CachedDailyRecord(
+    key: key ?? this.key,
+    organisationId: organisationId ?? this.organisationId,
+    flockId: flockId ?? this.flockId,
+    recordDate: recordDate ?? this.recordDate,
+    serverId: serverId.present ? serverId.value : this.serverId,
+    clientUuid: clientUuid.present ? clientUuid.value : this.clientUuid,
+    mortality: mortality ?? this.mortality,
+    culls: culls ?? this.culls,
+    eggsCollected: eggsCollected.present
+        ? eggsCollected.value
+        : this.eggsCollected,
+    eggsBroken: eggsBroken.present ? eggsBroken.value : this.eggsBroken,
+    feedKg: feedKg.present ? feedKg.value : this.feedKg,
+    waterL: waterL.present ? waterL.value : this.waterL,
+    averageWeightG: averageWeightG.present
+        ? averageWeightG.value
+        : this.averageWeightG,
+    birdsWeighed: birdsWeighed.present ? birdsWeighed.value : this.birdsWeighed,
+    notes: notes.present ? notes.value : this.notes,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CachedDailyRecord copyWithCompanion(CachedDailyRecordsCompanion data) {
+    return CachedDailyRecord(
+      key: data.key.present ? data.key.value : this.key,
+      organisationId: data.organisationId.present
+          ? data.organisationId.value
+          : this.organisationId,
+      flockId: data.flockId.present ? data.flockId.value : this.flockId,
+      recordDate: data.recordDate.present
+          ? data.recordDate.value
+          : this.recordDate,
+      serverId: data.serverId.present ? data.serverId.value : this.serverId,
+      clientUuid: data.clientUuid.present
+          ? data.clientUuid.value
+          : this.clientUuid,
+      mortality: data.mortality.present ? data.mortality.value : this.mortality,
+      culls: data.culls.present ? data.culls.value : this.culls,
+      eggsCollected: data.eggsCollected.present
+          ? data.eggsCollected.value
+          : this.eggsCollected,
+      eggsBroken: data.eggsBroken.present
+          ? data.eggsBroken.value
+          : this.eggsBroken,
+      feedKg: data.feedKg.present ? data.feedKg.value : this.feedKg,
+      waterL: data.waterL.present ? data.waterL.value : this.waterL,
+      averageWeightG: data.averageWeightG.present
+          ? data.averageWeightG.value
+          : this.averageWeightG,
+      birdsWeighed: data.birdsWeighed.present
+          ? data.birdsWeighed.value
+          : this.birdsWeighed,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedDailyRecord(')
+          ..write('key: $key, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('flockId: $flockId, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('serverId: $serverId, ')
+          ..write('clientUuid: $clientUuid, ')
+          ..write('mortality: $mortality, ')
+          ..write('culls: $culls, ')
+          ..write('eggsCollected: $eggsCollected, ')
+          ..write('eggsBroken: $eggsBroken, ')
+          ..write('feedKg: $feedKg, ')
+          ..write('waterL: $waterL, ')
+          ..write('averageWeightG: $averageWeightG, ')
+          ..write('birdsWeighed: $birdsWeighed, ')
+          ..write('notes: $notes, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    key,
+    organisationId,
+    flockId,
+    recordDate,
+    serverId,
+    clientUuid,
+    mortality,
+    culls,
+    eggsCollected,
+    eggsBroken,
+    feedKg,
+    waterL,
+    averageWeightG,
+    birdsWeighed,
+    notes,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedDailyRecord &&
+          other.key == this.key &&
+          other.organisationId == this.organisationId &&
+          other.flockId == this.flockId &&
+          other.recordDate == this.recordDate &&
+          other.serverId == this.serverId &&
+          other.clientUuid == this.clientUuid &&
+          other.mortality == this.mortality &&
+          other.culls == this.culls &&
+          other.eggsCollected == this.eggsCollected &&
+          other.eggsBroken == this.eggsBroken &&
+          other.feedKg == this.feedKg &&
+          other.waterL == this.waterL &&
+          other.averageWeightG == this.averageWeightG &&
+          other.birdsWeighed == this.birdsWeighed &&
+          other.notes == this.notes &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
+  final Value<String> key;
+  final Value<int> organisationId;
+  final Value<int> flockId;
+  final Value<String> recordDate;
+  final Value<int?> serverId;
+  final Value<String?> clientUuid;
+  final Value<int> mortality;
+  final Value<int> culls;
+  final Value<int?> eggsCollected;
+  final Value<int?> eggsBroken;
+  final Value<double?> feedKg;
+  final Value<double?> waterL;
+  final Value<double?> averageWeightG;
+  final Value<int?> birdsWeighed;
+  final Value<String?> notes;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CachedDailyRecordsCompanion({
+    this.key = const Value.absent(),
+    this.organisationId = const Value.absent(),
+    this.flockId = const Value.absent(),
+    this.recordDate = const Value.absent(),
+    this.serverId = const Value.absent(),
+    this.clientUuid = const Value.absent(),
+    this.mortality = const Value.absent(),
+    this.culls = const Value.absent(),
+    this.eggsCollected = const Value.absent(),
+    this.eggsBroken = const Value.absent(),
+    this.feedKg = const Value.absent(),
+    this.waterL = const Value.absent(),
+    this.averageWeightG = const Value.absent(),
+    this.birdsWeighed = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedDailyRecordsCompanion.insert({
+    required String key,
+    required int organisationId,
+    required int flockId,
+    required String recordDate,
+    this.serverId = const Value.absent(),
+    this.clientUuid = const Value.absent(),
+    this.mortality = const Value.absent(),
+    this.culls = const Value.absent(),
+    this.eggsCollected = const Value.absent(),
+    this.eggsBroken = const Value.absent(),
+    this.feedKg = const Value.absent(),
+    this.waterL = const Value.absent(),
+    this.averageWeightG = const Value.absent(),
+    this.birdsWeighed = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       organisationId = Value(organisationId),
+       flockId = Value(flockId),
+       recordDate = Value(recordDate),
+       updatedAt = Value(updatedAt);
+  static Insertable<CachedDailyRecord> custom({
+    Expression<String>? key,
+    Expression<int>? organisationId,
+    Expression<int>? flockId,
+    Expression<String>? recordDate,
+    Expression<int>? serverId,
+    Expression<String>? clientUuid,
+    Expression<int>? mortality,
+    Expression<int>? culls,
+    Expression<int>? eggsCollected,
+    Expression<int>? eggsBroken,
+    Expression<double>? feedKg,
+    Expression<double>? waterL,
+    Expression<double>? averageWeightG,
+    Expression<int>? birdsWeighed,
+    Expression<String>? notes,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (organisationId != null) 'organisation_id': organisationId,
+      if (flockId != null) 'flock_id': flockId,
+      if (recordDate != null) 'record_date': recordDate,
+      if (serverId != null) 'server_id': serverId,
+      if (clientUuid != null) 'client_uuid': clientUuid,
+      if (mortality != null) 'mortality': mortality,
+      if (culls != null) 'culls': culls,
+      if (eggsCollected != null) 'eggs_collected': eggsCollected,
+      if (eggsBroken != null) 'eggs_broken': eggsBroken,
+      if (feedKg != null) 'feed_kg': feedKg,
+      if (waterL != null) 'water_l': waterL,
+      if (averageWeightG != null) 'average_weight_g': averageWeightG,
+      if (birdsWeighed != null) 'birds_weighed': birdsWeighed,
+      if (notes != null) 'notes': notes,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedDailyRecordsCompanion copyWith({
+    Value<String>? key,
+    Value<int>? organisationId,
+    Value<int>? flockId,
+    Value<String>? recordDate,
+    Value<int?>? serverId,
+    Value<String?>? clientUuid,
+    Value<int>? mortality,
+    Value<int>? culls,
+    Value<int?>? eggsCollected,
+    Value<int?>? eggsBroken,
+    Value<double?>? feedKg,
+    Value<double?>? waterL,
+    Value<double?>? averageWeightG,
+    Value<int?>? birdsWeighed,
+    Value<String?>? notes,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedDailyRecordsCompanion(
+      key: key ?? this.key,
+      organisationId: organisationId ?? this.organisationId,
+      flockId: flockId ?? this.flockId,
+      recordDate: recordDate ?? this.recordDate,
+      serverId: serverId ?? this.serverId,
+      clientUuid: clientUuid ?? this.clientUuid,
+      mortality: mortality ?? this.mortality,
+      culls: culls ?? this.culls,
+      eggsCollected: eggsCollected ?? this.eggsCollected,
+      eggsBroken: eggsBroken ?? this.eggsBroken,
+      feedKg: feedKg ?? this.feedKg,
+      waterL: waterL ?? this.waterL,
+      averageWeightG: averageWeightG ?? this.averageWeightG,
+      birdsWeighed: birdsWeighed ?? this.birdsWeighed,
+      notes: notes ?? this.notes,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (organisationId.present) {
+      map['organisation_id'] = Variable<int>(organisationId.value);
+    }
+    if (flockId.present) {
+      map['flock_id'] = Variable<int>(flockId.value);
+    }
+    if (recordDate.present) {
+      map['record_date'] = Variable<String>(recordDate.value);
+    }
+    if (serverId.present) {
+      map['server_id'] = Variable<int>(serverId.value);
+    }
+    if (clientUuid.present) {
+      map['client_uuid'] = Variable<String>(clientUuid.value);
+    }
+    if (mortality.present) {
+      map['mortality'] = Variable<int>(mortality.value);
+    }
+    if (culls.present) {
+      map['culls'] = Variable<int>(culls.value);
+    }
+    if (eggsCollected.present) {
+      map['eggs_collected'] = Variable<int>(eggsCollected.value);
+    }
+    if (eggsBroken.present) {
+      map['eggs_broken'] = Variable<int>(eggsBroken.value);
+    }
+    if (feedKg.present) {
+      map['feed_kg'] = Variable<double>(feedKg.value);
+    }
+    if (waterL.present) {
+      map['water_l'] = Variable<double>(waterL.value);
+    }
+    if (averageWeightG.present) {
+      map['average_weight_g'] = Variable<double>(averageWeightG.value);
+    }
+    if (birdsWeighed.present) {
+      map['birds_weighed'] = Variable<int>(birdsWeighed.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedDailyRecordsCompanion(')
+          ..write('key: $key, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('flockId: $flockId, ')
+          ..write('recordDate: $recordDate, ')
+          ..write('serverId: $serverId, ')
+          ..write('clientUuid: $clientUuid, ')
+          ..write('mortality: $mortality, ')
+          ..write('culls: $culls, ')
+          ..write('eggsCollected: $eggsCollected, ')
+          ..write('eggsBroken: $eggsBroken, ')
+          ..write('feedKg: $feedKg, ')
+          ..write('waterL: $waterL, ')
+          ..write('averageWeightG: $averageWeightG, ')
+          ..write('birdsWeighed: $birdsWeighed, ')
+          ..write('notes: $notes, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5082,6 +6009,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $CachedNotificationsTable(this);
   late final $CachedVaccinationsTable cachedVaccinations =
       $CachedVaccinationsTable(this);
+  late final $CachedDailyRecordsTable cachedDailyRecords =
+      $CachedDailyRecordsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5096,6 +6025,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cachedSales,
     cachedNotifications,
     cachedVaccinations,
+    cachedDailyRecords,
   ];
 }
 
@@ -7724,6 +8654,453 @@ typedef $$CachedVaccinationsTableProcessedTableManager =
       CachedVaccination,
       PrefetchHooks Function()
     >;
+typedef $$CachedDailyRecordsTableCreateCompanionBuilder =
+    CachedDailyRecordsCompanion Function({
+      required String key,
+      required int organisationId,
+      required int flockId,
+      required String recordDate,
+      Value<int?> serverId,
+      Value<String?> clientUuid,
+      Value<int> mortality,
+      Value<int> culls,
+      Value<int?> eggsCollected,
+      Value<int?> eggsBroken,
+      Value<double?> feedKg,
+      Value<double?> waterL,
+      Value<double?> averageWeightG,
+      Value<int?> birdsWeighed,
+      Value<String?> notes,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedDailyRecordsTableUpdateCompanionBuilder =
+    CachedDailyRecordsCompanion Function({
+      Value<String> key,
+      Value<int> organisationId,
+      Value<int> flockId,
+      Value<String> recordDate,
+      Value<int?> serverId,
+      Value<String?> clientUuid,
+      Value<int> mortality,
+      Value<int> culls,
+      Value<int?> eggsCollected,
+      Value<int?> eggsBroken,
+      Value<double?> feedKg,
+      Value<double?> waterL,
+      Value<double?> averageWeightG,
+      Value<int?> birdsWeighed,
+      Value<String?> notes,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedDailyRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedDailyRecordsTable> {
+  $$CachedDailyRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverId => $composableBuilder(
+    column: $table.serverId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get mortality => $composableBuilder(
+    column: $table.mortality,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get culls => $composableBuilder(
+    column: $table.culls,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get eggsCollected => $composableBuilder(
+    column: $table.eggsCollected,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get eggsBroken => $composableBuilder(
+    column: $table.eggsBroken,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get feedKg => $composableBuilder(
+    column: $table.feedKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get waterL => $composableBuilder(
+    column: $table.waterL,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get averageWeightG => $composableBuilder(
+    column: $table.averageWeightG,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get birdsWeighed => $composableBuilder(
+    column: $table.birdsWeighed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedDailyRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedDailyRecordsTable> {
+  $$CachedDailyRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverId => $composableBuilder(
+    column: $table.serverId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get mortality => $composableBuilder(
+    column: $table.mortality,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get culls => $composableBuilder(
+    column: $table.culls,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get eggsCollected => $composableBuilder(
+    column: $table.eggsCollected,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get eggsBroken => $composableBuilder(
+    column: $table.eggsBroken,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get feedKg => $composableBuilder(
+    column: $table.feedKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get waterL => $composableBuilder(
+    column: $table.waterL,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get averageWeightG => $composableBuilder(
+    column: $table.averageWeightG,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get birdsWeighed => $composableBuilder(
+    column: $table.birdsWeighed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedDailyRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedDailyRecordsTable> {
+  $$CachedDailyRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get flockId =>
+      $composableBuilder(column: $table.flockId, builder: (column) => column);
+
+  GeneratedColumn<String> get recordDate => $composableBuilder(
+    column: $table.recordDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get serverId =>
+      $composableBuilder(column: $table.serverId, builder: (column) => column);
+
+  GeneratedColumn<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get mortality =>
+      $composableBuilder(column: $table.mortality, builder: (column) => column);
+
+  GeneratedColumn<int> get culls =>
+      $composableBuilder(column: $table.culls, builder: (column) => column);
+
+  GeneratedColumn<int> get eggsCollected => $composableBuilder(
+    column: $table.eggsCollected,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get eggsBroken => $composableBuilder(
+    column: $table.eggsBroken,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get feedKg =>
+      $composableBuilder(column: $table.feedKg, builder: (column) => column);
+
+  GeneratedColumn<double> get waterL =>
+      $composableBuilder(column: $table.waterL, builder: (column) => column);
+
+  GeneratedColumn<double> get averageWeightG => $composableBuilder(
+    column: $table.averageWeightG,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get birdsWeighed => $composableBuilder(
+    column: $table.birdsWeighed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CachedDailyRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedDailyRecordsTable,
+          CachedDailyRecord,
+          $$CachedDailyRecordsTableFilterComposer,
+          $$CachedDailyRecordsTableOrderingComposer,
+          $$CachedDailyRecordsTableAnnotationComposer,
+          $$CachedDailyRecordsTableCreateCompanionBuilder,
+          $$CachedDailyRecordsTableUpdateCompanionBuilder,
+          (
+            CachedDailyRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $CachedDailyRecordsTable,
+              CachedDailyRecord
+            >,
+          ),
+          CachedDailyRecord,
+          PrefetchHooks Function()
+        > {
+  $$CachedDailyRecordsTableTableManager(
+    _$AppDatabase db,
+    $CachedDailyRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedDailyRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedDailyRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedDailyRecordsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<int> organisationId = const Value.absent(),
+                Value<int> flockId = const Value.absent(),
+                Value<String> recordDate = const Value.absent(),
+                Value<int?> serverId = const Value.absent(),
+                Value<String?> clientUuid = const Value.absent(),
+                Value<int> mortality = const Value.absent(),
+                Value<int> culls = const Value.absent(),
+                Value<int?> eggsCollected = const Value.absent(),
+                Value<int?> eggsBroken = const Value.absent(),
+                Value<double?> feedKg = const Value.absent(),
+                Value<double?> waterL = const Value.absent(),
+                Value<double?> averageWeightG = const Value.absent(),
+                Value<int?> birdsWeighed = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedDailyRecordsCompanion(
+                key: key,
+                organisationId: organisationId,
+                flockId: flockId,
+                recordDate: recordDate,
+                serverId: serverId,
+                clientUuid: clientUuid,
+                mortality: mortality,
+                culls: culls,
+                eggsCollected: eggsCollected,
+                eggsBroken: eggsBroken,
+                feedKg: feedKg,
+                waterL: waterL,
+                averageWeightG: averageWeightG,
+                birdsWeighed: birdsWeighed,
+                notes: notes,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required int organisationId,
+                required int flockId,
+                required String recordDate,
+                Value<int?> serverId = const Value.absent(),
+                Value<String?> clientUuid = const Value.absent(),
+                Value<int> mortality = const Value.absent(),
+                Value<int> culls = const Value.absent(),
+                Value<int?> eggsCollected = const Value.absent(),
+                Value<int?> eggsBroken = const Value.absent(),
+                Value<double?> feedKg = const Value.absent(),
+                Value<double?> waterL = const Value.absent(),
+                Value<double?> averageWeightG = const Value.absent(),
+                Value<int?> birdsWeighed = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedDailyRecordsCompanion.insert(
+                key: key,
+                organisationId: organisationId,
+                flockId: flockId,
+                recordDate: recordDate,
+                serverId: serverId,
+                clientUuid: clientUuid,
+                mortality: mortality,
+                culls: culls,
+                eggsCollected: eggsCollected,
+                eggsBroken: eggsBroken,
+                feedKg: feedKg,
+                waterL: waterL,
+                averageWeightG: averageWeightG,
+                birdsWeighed: birdsWeighed,
+                notes: notes,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedDailyRecordsTable, CachedDailyRecord>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CachedDailyRecordsTable,
+                    CachedDailyRecord
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedDailyRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedDailyRecordsTable,
+      CachedDailyRecord,
+      $$CachedDailyRecordsTableFilterComposer,
+      $$CachedDailyRecordsTableOrderingComposer,
+      $$CachedDailyRecordsTableAnnotationComposer,
+      $$CachedDailyRecordsTableCreateCompanionBuilder,
+      $$CachedDailyRecordsTableUpdateCompanionBuilder,
+      (
+        CachedDailyRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $CachedDailyRecordsTable,
+          CachedDailyRecord
+        >,
+      ),
+      CachedDailyRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7746,4 +9123,6 @@ class $AppDatabaseManager {
       $$CachedNotificationsTableTableManager(_db, _db.cachedNotifications);
   $$CachedVaccinationsTableTableManager get cachedVaccinations =>
       $$CachedVaccinationsTableTableManager(_db, _db.cachedVaccinations);
+  $$CachedDailyRecordsTableTableManager get cachedDailyRecords =>
+      $$CachedDailyRecordsTableTableManager(_db, _db.cachedDailyRecords);
 }

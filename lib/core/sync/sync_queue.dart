@@ -51,6 +51,27 @@ class SyncQueueRepository {
     return clientUuid;
   }
 
+  /// Remplace le corps d'une saisie encore en attente (relevé complété avant son envoi).
+  /// Retourne false si elle est déjà partie : l'appelant met alors une nouvelle saisie en file.
+  Future<bool> replacePendingPayload({
+    required String clientUuid,
+    required Map<String, dynamic> payload,
+  }) async {
+    final updated =
+        await (_db.update(_db.syncQueue)..where(
+              (q) =>
+                  q.clientUuid.equals(clientUuid) & q.status.equals('pending'),
+            ))
+            .write(
+              SyncQueueCompanion(
+                payload: Value(jsonEncode(payload)),
+                recordedAt: Value(DateTime.now()),
+              ),
+            );
+
+    return updated > 0;
+  }
+
   Stream<int> watchPendingCount(int organisationId) {
     final query = _db.select(_db.syncQueue)
       ..where(
@@ -132,25 +153,31 @@ class SyncQueueRepository {
           .cast<Map<String, dynamic>>();
 
       for (final result in results) {
-        await (_db.update(_db.syncQueue)..where(
-              (q) => q.clientUuid.equals(result['client_uuid'] as String),
-            ))
-            .write(
-              SyncQueueCompanion(
-                status: Value(result['status'] as String? ?? 'rejected'),
-                message: Value(result['message'] as String?),
-                subjectId: Value(result['id'] as int?),
-                attempts: Value(
-                  batch
-                          .firstWhere(
-                            (e) => e.clientUuid == result['client_uuid'],
-                          )
-                          .attempts +
-                      1,
-                ),
-                syncedAt: Value(DateTime.now()),
-              ),
-            );
+        final entry = batch.firstWhere(
+          (e) => e.clientUuid == result['client_uuid'],
+        );
+        final status = result['status'] as String? ?? 'rejected';
+
+        await (_db.update(
+          _db.syncQueue,
+        )..where((q) => q.clientUuid.equals(entry.clientUuid))).write(
+          SyncQueueCompanion(
+            status: Value(status),
+            message: Value(result['message'] as String?),
+            subjectId: Value(result['id'] as int?),
+            attempts: Value(entry.attempts + 1),
+            syncedAt: Value(DateTime.now()),
+          ),
+        );
+
+        if (status == 'created' || status == 'duplicate') {
+          await onSynced[entry.type]?.call(
+            entry.organisationId,
+            entry.clientUuid,
+            result,
+          );
+        }
+
         processed++;
       }
     }

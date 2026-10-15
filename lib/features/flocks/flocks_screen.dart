@@ -37,12 +37,15 @@ class _FlocksScreenState extends ConsumerState<FlocksScreen> {
     final membership = session.membership!;
 
     try {
-      await ref
-          .read(flockRepositoryProvider)
-          .refresh(
-            organisationId: membership.organisationId,
-            organisationSlug: membership.slug,
-          );
+      final repository = ref.read(flockRepositoryProvider);
+      await repository.refresh(
+        organisationId: membership.organisationId,
+        organisationSlug: membership.slug,
+      );
+      await repository.refreshDailyRecords(
+        organisationId: membership.organisationId,
+        organisationSlug: membership.slug,
+      );
     } catch (error) {
       if (!silent && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

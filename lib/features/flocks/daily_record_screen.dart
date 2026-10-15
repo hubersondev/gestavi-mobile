@@ -34,6 +34,44 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
   DateTime _date = DateTime.now();
   bool _saving = false;
 
+  /// Relevé déjà connu pour la bande à cette date (serveur ou saisie locale), pré-rempli
+  CachedDailyRecord? _existing;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadExisting());
+  }
+
+  Future<void> _loadExisting() async {
+    final existing = await ref
+        .read(flockRepositoryProvider)
+        .findRecord(widget.flock.id, _isoDate(_date));
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _existing = existing;
+      _mortality.text = (existing?.mortality ?? 0).toString();
+      _culls.text = (existing?.culls ?? 0).toString();
+      _eggs.text = existing?.eggsCollected?.toString() ?? '';
+      _eggsBroken.text = existing?.eggsBroken?.toString() ?? '';
+      _feed.text = existing?.feedKg == null
+          ? ''
+          : formatAmountInput(existing!.feedKg!);
+      _water.text = existing?.waterL == null
+          ? ''
+          : formatAmountInput(existing!.waterL!);
+      _weight.text = existing?.averageWeightG == null
+          ? ''
+          : formatAmountInput(existing!.averageWeightG!);
+      _weighed.text = existing?.birdsWeighed?.toString() ?? '';
+      _notes.text = existing?.notes ?? '';
+    });
+  }
+
   @override
   void dispose() {
     for (final controller in [
@@ -71,6 +109,8 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
       'average_weight_g': widget.flock.tracksWeight ? asNum(_weight) : null,
       'birds_weighed': widget.flock.tracksWeight ? asInt(_weighed) : null,
       'notes': _notes.text.trim().isEmpty ? null : _notes.text.trim(),
+      // Relevé déjà existant : les totaux du jour remplacent les valeurs, sans doublon
+      'merge': _existing == null ? null : true,
     };
 
     payload.removeWhere((_, value) => value == null);
@@ -93,8 +133,11 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
     final membership = session.membership!;
     final payload = buildPayload();
     final losses = (payload['mortality'] as int) + (payload['culls'] as int);
+    final previousLosses =
+        (_existing?.mortality ?? 0) + (_existing?.culls ?? 0);
+    final lossesDelta = losses - previousLosses;
 
-    if (losses > widget.flock.quantityCurrent) {
+    if (lossesDelta > widget.flock.quantityCurrent) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -110,19 +153,40 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
     FocusScope.of(context).unfocus();
 
     final queue = ref.read(syncQueueProvider);
-    await queue.enqueue(
-      organisationId: membership.organisationId,
-      type: 'daily_record',
-      payload: payload,
-      recordedAt: DateTime.now(),
-    );
-    await ref
-        .read(flockRepositoryProvider)
-        .applyLocalRecord(
-          flockId: widget.flock.id,
-          recordDate: payload['record_date'] as String,
-          losses: losses,
+    final flocks = ref.read(flockRepositoryProvider);
+    final recordDate = payload['record_date'] as String;
+
+    // Une saisie locale encore en attente est remplacée plutôt que doublée
+    var clientUuid = _existing?.clientUuid;
+    final replaced =
+        clientUuid != null &&
+        await queue.replacePendingPayload(
+          clientUuid: clientUuid,
+          payload: payload,
         );
+
+    if (!replaced) {
+      clientUuid = await queue.enqueue(
+        organisationId: membership.organisationId,
+        type: 'daily_record',
+        payload: payload,
+        recordedAt: DateTime.now(),
+      );
+    }
+
+    await flocks.upsertLocalRecord(
+      organisationId: membership.organisationId,
+      flockId: widget.flock.id,
+      recordDate: recordDate,
+      payload: payload,
+      clientUuid: clientUuid,
+      serverId: _existing?.serverId,
+    );
+    await flocks.applyLocalRecord(
+      flockId: widget.flock.id,
+      recordDate: recordDate,
+      losses: lossesDelta,
+    );
 
     final sent = await queue.pushQuietly(
       organisationId: membership.organisationId,
@@ -136,7 +200,11 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          sent > 0 ? 'Relevé enregistré et synchronisé.' : 'Relevé enregistré, il sera synchronisé dès que le réseau revient.',
+          sent > 0
+              ? (_existing == null
+                    ? 'Relevé enregistré et synchronisé.'
+                    : 'Relevé complété et synchronisé.')
+              : 'Relevé enregistré, il sera synchronisé dès que le réseau revient.',
         ),
       ),
     );
@@ -154,6 +222,7 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
 
     if (picked != null) {
       setState(() => _date = picked);
+      await _loadExisting();
     }
   }
 
@@ -164,130 +233,146 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Relevé · ${flock.code}')),
+      // Défilement simple plutôt que ListView : une liste paresseuse démonte les champs hors
+      // écran et leurs validations ne s'exécuteraient plus une fois la page défilée
       body: Form(
         key: _formKey,
-        child: ListView(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          children: [
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.calendar_today_outlined),
-                title: const Text('Date du relevé'),
-                subtitle: Text(_frDate(_date)),
-                trailing: const Icon(Icons.edit_outlined),
-                onTap: _pickDate,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Effectif actuel : ${flock.quantityCurrent} sujets',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _IntField(
-                    controller: _mortality,
-                    label: 'Mortalité',
-                    required: true,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.calendar_today_outlined),
+                  title: const Text('Date du relevé'),
+                  subtitle: Text(_frDate(_date)),
+                  trailing: const Icon(Icons.edit_outlined),
+                  onTap: _pickDate,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _IntField(
-                    controller: _culls,
-                    label: 'Réformes',
-                    required: true,
+              ),
+              if (_existing != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _existing!.clientUuid != null
+                      ? 'Relevé déjà saisi ce jour sur ce téléphone : complétez les totaux, il sera envoyé une seule fois.'
+                      : 'Relevé déjà enregistré ce jour : complétez les totaux, ils remplaceront les valeurs en place.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: GestaviTheme.info,
                   ),
                 ),
               ],
-            ),
-            if (flock.tracksEggs) ...[
+              const SizedBox(height: 16),
+              Text(
+                'Effectif actuel : ${flock.quantityCurrent} sujets',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: _IntField(
-                      controller: _eggs,
-                      label: 'Œufs collectés',
+                      controller: _mortality,
+                      label: 'Mortalité',
+                      required: true,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _IntField(
-                      controller: _eggsBroken,
-                      label: 'Œufs cassés',
+                      controller: _culls,
+                      label: 'Réformes',
+                      required: true,
                     ),
                   ),
                 ],
               ),
-            ],
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _NumField(controller: _feed, label: 'Aliment (kg)'),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _NumField(controller: _water, label: 'Eau (L)'),
+              if (flock.tracksEggs) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _IntField(
+                        controller: _eggs,
+                        label: 'Œufs collectés',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _IntField(
+                        controller: _eggsBroken,
+                        label: 'Œufs cassés',
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ),
-            if (flock.tracksWeight) ...[
               const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
-                    child: _NumField(
-                      controller: _weight,
-                      label: 'Poids moyen (g)',
-                    ),
+                    child: _NumField(controller: _feed, label: 'Aliment (kg)'),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _IntField(
-                      controller: _weighed,
-                      label: 'Sujets pesés',
-                    ),
+                    child: _NumField(controller: _water, label: 'Eau (L)'),
                   ),
                 ],
               ),
+              if (flock.tracksWeight) ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _NumField(
+                        controller: _weight,
+                        label: 'Poids moyen (g)',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _IntField(
+                        controller: _weighed,
+                        label: 'Sujets pesés',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _notes,
+                maxLines: 3,
+                maxLength: 2000,
+                decoration: const InputDecoration(
+                  labelText: 'Observations',
+                  alignLabelWithHint: true,
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: _saving ? null : _save,
+                icon: _saving
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.check),
+                label: const Text('Enregistrer le relevé'),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Fonctionne sans réseau : le relevé est conservé sur le téléphone et envoyé plus tard.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: GestaviTheme.inkMuted,
+                ),
+              ),
             ],
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _notes,
-              maxLines: 3,
-              maxLength: 2000,
-              decoration: const InputDecoration(
-                labelText: 'Observations',
-                alignLabelWithHint: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _saving ? null : _save,
-              icon: _saving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.check),
-              label: const Text('Enregistrer le relevé'),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Fonctionne sans réseau : le relevé est conservé sur le téléphone et envoyé plus tard.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: GestaviTheme.inkMuted,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

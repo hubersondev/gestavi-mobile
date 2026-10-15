@@ -160,6 +160,31 @@ class CachedVaccinations extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Relevés récents des bandes (serveur et saisies locales), pour pré-remplir et compléter le
+/// relevé du jour au lieu d'en créer un second.
+class CachedDailyRecords extends Table {
+  TextColumn get key => text()(); // '<flockId>_<AAAA-MM-JJ>'
+  IntColumn get organisationId => integer()();
+  IntColumn get flockId => integer()();
+  TextColumn get recordDate => text()();
+  IntColumn get serverId => integer().nullable()();
+  TextColumn get clientUuid =>
+      text().nullable()(); // saisie locale en attente d'envoi
+  IntColumn get mortality => integer().withDefault(const Constant(0))();
+  IntColumn get culls => integer().withDefault(const Constant(0))();
+  IntColumn get eggsCollected => integer().nullable()();
+  IntColumn get eggsBroken => integer().nullable()();
+  RealColumn get feedKg => real().nullable()();
+  RealColumn get waterL => real().nullable()();
+  RealColumn get averageWeightG => real().nullable()();
+  IntColumn get birdsWeighed => integer().nullable()();
+  TextColumn get notes => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -171,13 +196,14 @@ class CachedVaccinations extends Table {
     CachedSales,
     CachedNotifications,
     CachedVaccinations,
+    CachedDailyRecords,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -197,6 +223,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(cachedProducts, cachedProducts.stockId);
         await m.addColumn(cachedProducts, cachedProducts.stockUnitsPerUnit);
         await m.addColumn(cachedStocks, cachedStocks.kind);
+      }
+      if (from < 6) {
+        await m.createTable(cachedDailyRecords);
       }
     },
   );

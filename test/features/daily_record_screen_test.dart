@@ -105,6 +105,11 @@ void main() {
         find.widgetWithText(TextFormField, 'Aliment (kg)'),
         '118,5',
       );
+      await tester.scrollUntilVisible(
+        find.text('Enregistrer le relevé'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(find.text('Enregistrer le relevé'));
       await tester.pumpAndSettle();
 
@@ -137,6 +142,11 @@ void main() {
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Mortalité'),
         '1200',
+      );
+      await tester.scrollUntilVisible(
+        find.text('Enregistrer le relevé'),
+        200,
+        scrollable: find.byType(Scrollable).first,
       );
       await tester.tap(find.text('Enregistrer le relevé'));
       await tester.pumpAndSettle();
