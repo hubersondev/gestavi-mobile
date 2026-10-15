@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/sync/sync_queue.dart';
 import '../../core/sync/sync_service.dart';
+import '../alerts/alerts_screen.dart';
+import '../alerts/notification_repository.dart';
 import '../auth/auth_controller.dart';
 import '../flocks/flocks_screen.dart';
 import '../sales/sales_screen.dart';
@@ -62,6 +64,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     }
     final pendingCount =
         ref.watch(_pendingCountProvider(membership.organisationId)).value ?? 0;
+    final unread = ref.watch(unreadNotificationsCountProvider).value ?? 0;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -127,14 +130,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         children: const [
           FlocksScreen(),
           SalesScreen(),
-          _ComingSoon(
-            title: 'Stocks',
-            detail: 'Niveaux par ferme, sorties d\'aliment et de médicaments.',
-          ),
-          _ComingSoon(
-            title: 'Alertes',
-            detail: 'Stock bas, vaccinations à faire, relevés manquants, factures échues.',
-          ),
+          StocksScreen(),
+          AlertsScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -143,7 +140,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         destinations: [
           for (final tab in _tabs)
             NavigationDestination(
-              icon: Icon(tab.icon),
+              icon: tab.label == 'Alertes' && unread > 0
+                  ? Badge.count(count: unread, child: Icon(tab.icon))
+                  : Icon(tab.icon),
               selectedIcon: Icon(tab.selected),
               label: tab.label,
             ),
@@ -174,35 +173,3 @@ final _pendingCountProvider = StreamProvider.family<int, int>(
   (ref, organisationId) =>
       ref.watch(syncQueueProvider).watchPendingCount(organisationId),
 );
-
-class _ComingSoon extends StatelessWidget {
-  const _ComingSoon({required this.title, required this.detail});
-
-  final String title;
-  final String detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(title, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              detail,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
