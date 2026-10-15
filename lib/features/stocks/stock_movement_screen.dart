@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
+import '../../core/ui/amount_input.dart';
 import '../../core/db/app_database.dart';
 import '../../core/sync/sync_queue.dart';
 import '../auth/auth_controller.dart';
@@ -35,8 +36,7 @@ class _StockMovementScreenState extends ConsumerState<StockMovementScreen> {
     super.dispose();
   }
 
-  double get _parsedQuantity =>
-      double.tryParse(_quantity.text.trim().replaceAll(',', '.')) ?? 0;
+  double get _parsedQuantity => parseAmount(_quantity.text) ?? 0;
 
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) {
@@ -158,14 +158,13 @@ class _StockMovementScreenState extends ConsumerState<StockMovementScreen> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [ThousandsFormatter()],
               decoration: InputDecoration(
                 labelText: 'Quantité',
                 suffixText: stock.unit,
               ),
               validator: (value) {
-                final parsed = double.tryParse(
-                  (value ?? '').trim().replaceAll(',', '.'),
-                );
+                final parsed = parseAmount(value ?? '');
 
                 return parsed == null || parsed <= 0
                     ? 'Quantité positive attendue'

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
+import '../../core/ui/amount_input.dart';
 import '../../core/db/app_database.dart';
 import '../../core/sync/sync_queue.dart';
 import '../auth/auth_controller.dart';
@@ -55,9 +56,8 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
   Map<String, dynamic> buildPayload() {
     int? asInt(TextEditingController c) =>
         c.text.trim().isEmpty ? null : int.tryParse(c.text.trim());
-    double? asNum(TextEditingController c) => c.text.trim().isEmpty
-        ? null
-        : double.tryParse(c.text.trim().replaceAll(',', '.'));
+    double? asNum(TextEditingController c) =>
+        c.text.trim().isEmpty ? null : parseAmount(c.text);
 
     final payload = <String, dynamic>{
       'flock_id': widget.flock.id,
@@ -336,15 +336,14 @@ class _NumField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: const [ThousandsFormatter()],
       decoration: InputDecoration(labelText: label),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return null;
         }
 
-        return double.tryParse(value.trim().replaceAll(',', '.')) == null
-            ? 'Nombre attendu'
-            : null;
+        return parseAmount(value) == null ? 'Nombre attendu' : null;
       },
     );
   }

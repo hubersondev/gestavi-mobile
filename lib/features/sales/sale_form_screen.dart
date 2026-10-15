@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/theme.dart';
+import '../../core/ui/amount_input.dart';
 import '../../core/db/app_database.dart';
 import '../../core/sync/sync_queue.dart';
 import '../auth/auth_controller.dart';
@@ -127,8 +128,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
 
     final membership = session.membership!;
     final total = _subtotal;
-    final paidText = _paidAmount.text.trim().replaceAll(',', '.');
-    final paid = paidText.isEmpty ? null : double.tryParse(paidText);
+    final paid = parseAmount(_paidAmount.text);
 
     if (_collectPayment && paid != null && paid > total) {
       _snack('L\'encaissement dépasse le total de la vente.');
@@ -338,6 +338,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  inputFormatters: const [ThousandsFormatter()],
                   decoration: const InputDecoration(
                     labelText: 'Montant encaissé',
                     helperText: 'Vide = la totalité de la vente',
@@ -347,9 +348,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                       return null;
                     }
 
-                    final parsed = double.tryParse(
-                      value.trim().replaceAll(',', '.'),
-                    );
+                    final parsed = parseAmount(value);
 
                     return parsed == null || parsed <= 0
                         ? 'Montant positif attendu'
@@ -404,11 +403,9 @@ class _LineDraft {
 
   String get productName => product?.name ?? '';
 
-  double get quantity =>
-      double.tryParse(quantityController.text.trim().replaceAll(',', '.')) ?? 0;
+  double get quantity => parseAmount(quantityController.text) ?? 0;
 
-  double get unitPrice =>
-      double.tryParse(priceController.text.trim().replaceAll(',', '.')) ?? 0;
+  double get unitPrice => parseAmount(priceController.text) ?? 0;
 
   double get total => quantity * unitPrice;
 
@@ -467,7 +464,7 @@ class _LineCard extends StatelessWidget {
                       line.product = products.firstWhere((p) => p.id == value);
                       if (line.priceController.text.trim().isEmpty ||
                           line.unitPrice == 0) {
-                        line.priceController.text = _plain(
+                        line.priceController.text = formatAmountInput(
                           line.product!.unitPrice,
                         );
                       }
@@ -524,6 +521,7 @@ class _LineCard extends StatelessWidget {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    inputFormatters: const [ThousandsFormatter()],
                     decoration: InputDecoration(
                       labelText: 'Quantité',
                       suffixText: line.product?.unit,
@@ -534,10 +532,7 @@ class _LineCard extends StatelessWidget {
                         return null;
                       }
 
-                      return double.tryParse(
-                                value.trim().replaceAll(',', '.'),
-                              ) ==
-                              null
+                      return parseAmount(value) == null
                           ? 'Nombre attendu'
                           : null;
                     },
@@ -550,6 +545,7 @@ class _LineCard extends StatelessWidget {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    inputFormatters: const [ThousandsFormatter()],
                     decoration: const InputDecoration(
                       labelText: 'Prix unitaire',
                     ),
@@ -573,9 +569,6 @@ class _LineCard extends StatelessWidget {
       ),
     );
   }
-
-  static String _plain(double value) =>
-      value % 1 == 0 ? value.toInt().toString() : value.toString();
 }
 
 String _frDate(DateTime d) =>

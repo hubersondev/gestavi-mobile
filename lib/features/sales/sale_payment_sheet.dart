@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/app_database.dart';
+import '../../core/ui/amount_input.dart';
 import '../../core/sync/sync_queue.dart';
 import '../auth/auth_controller.dart';
 import 'sale_repository.dart';
@@ -27,7 +28,7 @@ class SalePaymentSheet extends ConsumerStatefulWidget {
 class _SalePaymentSheetState extends ConsumerState<SalePaymentSheet> {
   final _formKey = GlobalKey<FormState>();
   late final _amount = TextEditingController(
-    text: _plain(widget.sale.total - widget.sale.paid),
+    text: formatAmountInput(widget.sale.total - widget.sale.paid),
   );
   String _method = 'cash';
   bool _saving = false;
@@ -52,7 +53,7 @@ class _SalePaymentSheetState extends ConsumerState<SalePaymentSheet> {
     }
 
     final membership = session.membership!;
-    final amount = double.parse(_amount.text.trim().replaceAll(',', '.'));
+    final amount = parseAmount(_amount.text)!;
 
     setState(() => _saving = true);
 
@@ -122,11 +123,10 @@ class _SalePaymentSheetState extends ConsumerState<SalePaymentSheet> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: const [ThousandsFormatter()],
               decoration: const InputDecoration(labelText: 'Montant encaissé'),
               validator: (value) {
-                final parsed = double.tryParse(
-                  (value ?? '').trim().replaceAll(',', '.'),
-                );
+                final parsed = parseAmount(value ?? '');
 
                 if (parsed == null || parsed <= 0) {
                   return 'Montant positif attendu';
@@ -158,7 +158,4 @@ class _SalePaymentSheetState extends ConsumerState<SalePaymentSheet> {
       ),
     );
   }
-
-  static String _plain(double value) =>
-      value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(2);
 }
