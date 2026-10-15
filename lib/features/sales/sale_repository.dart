@@ -212,7 +212,7 @@ class SaleRepository {
               'unit_price': line.unitPrice,
               'flock_id': line.flockId,
               'is_live_birds': line.isLiveBirds,
-            },
+            }..removeWhere((_, value) => value == null),
           )
           .toList(),
       'payment': payment == null
@@ -231,6 +231,28 @@ class SaleRepository {
       recordedAt: DateTime.now(),
       clientUuid: clientUuid,
     );
+
+    // Les sujets vivants vendus sortent aussitôt de l'effectif en cache de leur bande
+    for (final line in lines.where((l) => l.isLiveBirds && l.flockId != null)) {
+      final flock = await (_db.select(
+        _db.cachedFlocks,
+      )..where((f) => f.id.equals(line.flockId!))).getSingleOrNull();
+
+      if (flock != null) {
+        await (_db.update(
+          _db.cachedFlocks,
+        )..where((f) => f.id.equals(flock.id))).write(
+          CachedFlocksCompanion(
+            quantityCurrent: Value(
+              (flock.quantityCurrent - line.quantity.round()).clamp(
+                0,
+                flock.quantityCurrent,
+              ),
+            ),
+          ),
+        );
+      }
+    }
 
     await _db
         .into(_db.cachedSales)

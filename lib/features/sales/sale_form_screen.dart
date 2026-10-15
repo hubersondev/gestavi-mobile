@@ -7,6 +7,7 @@ import '../../core/sync/sync_queue.dart';
 import '../auth/auth_controller.dart';
 import '../auth/auth_repository.dart';
 import '../auth/models.dart';
+import '../flocks/flock_repository.dart';
 import 'sale_repository.dart';
 
 /// Vente rapide saisie hors-ligne : client (ou comptant), lignes produit × quantité × prix,
@@ -85,6 +86,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
           unit: line.product?.unit,
           quantity: line.quantity,
           unitPrice: line.unitPrice,
+          flockId: line.flock?.id,
           isLiveBirds: line.product?.isLiveBirds ?? false,
         ),
       )
@@ -99,6 +101,14 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
 
     if (lines.isEmpty) {
       _snack('Ajoutez au moins une ligne avec un produit et une quantité.');
+
+      return;
+    }
+
+    if (lines.any((line) => line.isLiveBirds && line.flockId == null)) {
+      _snack(
+        'Indiquez la bande vendue sur chaque ligne de sujets vivants, sinon l\'effectif ne bouge pas.',
+      );
 
       return;
     }
@@ -197,171 +207,188 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
     final products = organisationId == null
         ? const <CachedProduct>[]
         : ref.watch(productsProvider(organisationId)).value ?? const [];
+    final flocks = organisationId == null
+        ? const <CachedFlock>[]
+        : ref
+                  .watch(
+                    flocksProvider((
+                      organisationId: organisationId,
+                      farmId: _farmId,
+                    )),
+                  )
+                  .value ??
+              const [];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Nouvelle vente')),
+      // Défilement simple plutôt que ListView : une liste paresseuse démonte les champs hors
+      // écran et leurs validations ne s'exécuteraient plus une fois la page défilée
       body: Form(
         key: _formKey,
-        child: ListView(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
-          children: [
-            if (_farms.length > 1) ...[
-              DropdownButtonFormField<int>(
-                initialValue: _farmId,
-                decoration: const InputDecoration(labelText: 'Ferme'),
-                items: [
-                  for (final farm in _farms)
-                    DropdownMenuItem(value: farm.id, child: Text(farm.name)),
-                ],
-                onChanged: (value) => setState(() => _farmId = value),
-                validator: (value) => value == null ? 'Obligatoire' : null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_farms.length > 1) ...[
+                DropdownButtonFormField<int>(
+                  initialValue: _farmId,
+                  decoration: const InputDecoration(labelText: 'Ferme'),
+                  items: [
+                    for (final farm in _farms)
+                      DropdownMenuItem(value: farm.id, child: Text(farm.name)),
+                  ],
+                  onChanged: (value) => setState(() => _farmId = value),
+                  validator: (value) => value == null ? 'Obligatoire' : null,
+                ),
+                const SizedBox(height: 12),
+              ],
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.calendar_today_outlined),
+                  title: const Text('Date de la vente'),
+                  subtitle: Text(_frDate(_date)),
+                  trailing: const Icon(Icons.edit_outlined),
+                  onTap: _pickDate,
+                ),
               ),
               const SizedBox(height: 12),
-            ],
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.calendar_today_outlined),
-                title: const Text('Date de la vente'),
-                subtitle: Text(_frDate(_date)),
-                trailing: const Icon(Icons.edit_outlined),
-                onTap: _pickDate,
-              ),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<int?>(
-              initialValue: _customer?.id,
-              decoration: const InputDecoration(labelText: 'Client'),
-              items: [
-                const DropdownMenuItem<int?>(
-                  value: null,
-                  child: Text('Client comptant'),
-                ),
-                for (final customer in customers)
-                  DropdownMenuItem<int?>(
-                    value: customer.id,
-                    child: Text(customer.name),
-                  ),
-              ],
-              onChanged: (value) => setState(
-                () => _customer = value == null
-                    ? null
-                    : customers.firstWhere((c) => c.id == value),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text('Lignes', style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            for (var i = 0; i < _lines.length; i++) ...[
-              _LineCard(
-                line: _lines[i],
-                products: products,
-                canRemove: _lines.length > 1,
-                onChanged: () => setState(() {}),
-                onRemove: () => setState(() => _lines.removeAt(i).dispose()),
-              ),
-              const SizedBox(height: 8),
-            ],
-            OutlinedButton.icon(
-              onPressed: () => setState(() => _lines.add(_LineDraft())),
-              icon: const Icon(Icons.add),
-              label: const Text('Ajouter une ligne'),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Text('Total', style: theme.textTheme.titleMedium),
-                const Spacer(),
-                Text(
-                  formatXof(_subtotal),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            const Divider(height: 32),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Encaisser maintenant'),
-              subtitle: const Text(
-                'Sinon la vente reste à crédit, à encaisser plus tard.',
-              ),
-              value: _collectPayment,
-              onChanged: (value) => setState(() => _collectPayment = value),
-            ),
-            if (_collectPayment) ...[
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                initialValue: _paymentMethod,
-                decoration: const InputDecoration(
-                  labelText: 'Mode de paiement',
-                ),
+              DropdownButtonFormField<int?>(
+                initialValue: _customer?.id,
+                decoration: const InputDecoration(labelText: 'Client'),
                 items: [
-                  for (final entry in salePaymentMethods.entries)
-                    DropdownMenuItem(
-                      value: entry.key,
-                      child: Text(entry.value),
+                  const DropdownMenuItem<int?>(
+                    value: null,
+                    child: Text('Client comptant'),
+                  ),
+                  for (final customer in customers)
+                    DropdownMenuItem<int?>(
+                      value: customer.id,
+                      child: Text(customer.name),
                     ),
                 ],
-                onChanged: (value) =>
-                    setState(() => _paymentMethod = value ?? 'cash'),
+                onChanged: (value) => setState(
+                  () => _customer = value == null
+                      ? null
+                      : customers.firstWhere((c) => c.id == value),
+                ),
               ),
+              const SizedBox(height: 20),
+              Text('Lignes', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              for (var i = 0; i < _lines.length; i++) ...[
+                _LineCard(
+                  line: _lines[i],
+                  products: products,
+                  flocks: flocks,
+                  canRemove: _lines.length > 1,
+                  onChanged: () => setState(() {}),
+                  onRemove: () => setState(() => _lines.removeAt(i).dispose()),
+                ),
+                const SizedBox(height: 8),
+              ],
+              OutlinedButton.icon(
+                onPressed: () => setState(() => _lines.add(_LineDraft())),
+                icon: const Icon(Icons.add),
+                label: const Text('Ajouter une ligne'),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Text('Total', style: theme.textTheme.titleMedium),
+                  const Spacer(),
+                  Text(
+                    formatXof(_subtotal),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(height: 32),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Encaisser maintenant'),
+                subtitle: const Text(
+                  'Sinon la vente reste à crédit, à encaisser plus tard.',
+                ),
+                value: _collectPayment,
+                onChanged: (value) => setState(() => _collectPayment = value),
+              ),
+              if (_collectPayment) ...[
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  initialValue: _paymentMethod,
+                  decoration: const InputDecoration(
+                    labelText: 'Mode de paiement',
+                  ),
+                  items: [
+                    for (final entry in salePaymentMethods.entries)
+                      DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      ),
+                  ],
+                  onChanged: (value) =>
+                      setState(() => _paymentMethod = value ?? 'cash'),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _paidAmount,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Montant encaissé',
+                    helperText: 'Vide = la totalité de la vente',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return null;
+                    }
+
+                    final parsed = double.tryParse(
+                      value.trim().replaceAll(',', '.'),
+                    );
+
+                    return parsed == null || parsed <= 0
+                        ? 'Montant positif attendu'
+                        : null;
+                  },
+                ),
+              ],
               const SizedBox(height: 12),
               TextFormField(
-                controller: _paidAmount,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                controller: _notes,
+                maxLines: 2,
+                maxLength: 1000,
                 decoration: const InputDecoration(
-                  labelText: 'Montant encaissé',
-                  helperText: 'Vide = la totalité de la vente',
+                  labelText: 'Remarques',
+                  alignLabelWithHint: true,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return null;
-                  }
-
-                  final parsed = double.tryParse(
-                    value.trim().replaceAll(',', '.'),
-                  );
-
-                  return parsed == null || parsed <= 0
-                      ? 'Montant positif attendu'
-                      : null;
-                },
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: _saving ? null : _save,
+                icon: _saving
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.check),
+                label: const Text('Enregistrer la vente'),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Fonctionne sans réseau : la vente est conservée sur le téléphone et envoyée plus tard.',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: GestaviTheme.inkMuted,
+                ),
               ),
             ],
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _notes,
-              maxLines: 2,
-              maxLength: 1000,
-              decoration: const InputDecoration(
-                labelText: 'Remarques',
-                alignLabelWithHint: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _saving ? null : _save,
-              icon: _saving
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.check),
-              label: const Text('Enregistrer la vente'),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Fonctionne sans réseau : la vente est conservée sur le téléphone et envoyée plus tard.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: GestaviTheme.inkMuted,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -371,6 +398,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
 /// Ligne en cours de saisie ; le prix se pré-remplit depuis le catalogue mais reste modifiable.
 class _LineDraft {
   CachedProduct? product;
+  CachedFlock? flock;
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
 
@@ -396,6 +424,7 @@ class _LineCard extends StatelessWidget {
   const _LineCard({
     required this.line,
     required this.products,
+    required this.flocks,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
@@ -403,6 +432,7 @@ class _LineCard extends StatelessWidget {
 
   final _LineDraft line;
   final List<CachedProduct> products;
+  final List<CachedFlock> flocks;
   final bool canRemove;
   final VoidCallback onChanged;
   final VoidCallback onRemove;
@@ -456,6 +486,35 @@ class _LineCard extends StatelessWidget {
                   ),
               ],
             ),
+            if (line.product?.isLiveBirds == true) ...[
+              const SizedBox(height: 8),
+              DropdownButtonFormField<int>(
+                initialValue: line.flock?.id,
+                decoration: const InputDecoration(
+                  labelText: 'Bande vendue',
+                  helperText: 'Les sujets vendus sortent de l\'effectif',
+                ),
+                isExpanded: true,
+                items: [
+                  for (final flock in flocks)
+                    DropdownMenuItem(
+                      value: flock.id,
+                      child: Text(
+                        flock.name?.isNotEmpty == true
+                            ? '${flock.code} · ${flock.name} (${flock.quantityCurrent})'
+                            : '${flock.code} (${flock.quantityCurrent})',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                ],
+                onChanged: (value) {
+                  line.flock = flocks.firstWhere((f) => f.id == value);
+                  onChanged();
+                },
+                validator: (value) =>
+                    value == null ? 'Bande obligatoire' : null,
+              ),
+            ],
             const SizedBox(height: 8),
             Row(
               children: [

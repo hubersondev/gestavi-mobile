@@ -76,6 +76,41 @@ void main() {
 
   tearDown(() => db.close());
 
+  Future<void> seedLiveBirds() async {
+    await db
+        .into(db.cachedProducts)
+        .insert(
+          const CachedProduct(
+            id: 10,
+            organisationId: 7,
+            name: 'Poulet vif',
+            unit: 'sujet',
+            unitPrice: 3000,
+            taxPercent: 0,
+            isLiveBirds: true,
+          ),
+        );
+    await db
+        .into(db.cachedFlocks)
+        .insert(
+          const CachedFlock(
+            id: 3,
+            organisationId: 7,
+            farmId: 1,
+            code: 'LOT-003',
+            name: 'Chair',
+            farmName: 'Ferme A',
+            kind: 'broiler',
+            tracksEggs: false,
+            tracksWeight: true,
+            quantityCurrent: 1000,
+            ageDays: 40,
+            lastRecordDate: null,
+            status: 'active',
+          ),
+        );
+  }
+
   Widget app() => ProviderScope(
     overrides: [
       appDatabaseProvider.overrideWithValue(db),
@@ -137,6 +172,71 @@ void main() {
       final sales = await db.select(db.cachedSales).get();
       expect(sales.single.customerName, 'Boulangerie du Plateau');
       expect(sales.single.status, 'local');
+
+      await unmount(tester);
+    },
+  );
+
+  testWidgets(
+    'un produit « sujets vivants » exige la bande vendue, puis l\'envoie dans la ligne',
+    (tester) async {
+      await seedLiveBirds();
+      when(() => api.post(any(), body: any(named: 'body')))
+          .thenThrow(const ApiException('Pas de connexion'));
+
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<int>).first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Poulet vif').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Quantité'),
+        '50',
+      );
+      await tester.pumpAndSettle();
+
+      // Sans bande : refus
+      await tester.scrollUntilVisible(
+        find.text('Enregistrer la vente'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Enregistrer la vente'));
+      await tester.pumpAndSettle();
+      expect(find.text('Bande obligatoire'), findsOneWidget);
+      expect(await SyncQueueRepository(db: db, api: api).pending(7), isEmpty);
+
+      // Avec la bande : la ligne la porte
+      await tester.scrollUntilVisible(
+        find.byType(DropdownButtonFormField<int>).at(1),
+        -200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byType(DropdownButtonFormField<int>).at(1));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('LOT-003').last);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Enregistrer la vente'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.text('Enregistrer la vente'));
+      await tester.pumpAndSettle();
+
+      final pending = await SyncQueueRepository(db: db, api: api).pending(7);
+      final item =
+          (decodeSalePayload(pending.single.payload)['items'] as List).single
+              as Map<String, dynamic>;
+      expect(item['flock_id'], 3);
+      expect(item['is_live_birds'], isTrue);
+
+      final flock = await (db.select(
+        db.cachedFlocks,
+      )..where((f) => f.id.equals(3))).getSingle();
+      expect(flock.quantityCurrent, 950);
 
       await unmount(tester);
     },

@@ -239,6 +239,55 @@ void main() {
     },
   );
 
+  test('une ligne de sujets vivants sort aussitôt les sujets de l\'effectif en cache de la bande', () async {
+    await db
+        .into(db.cachedFlocks)
+        .insert(
+          const CachedFlock(
+            id: 3,
+            organisationId: 7,
+            farmId: 1,
+            code: 'LOT-003',
+            name: 'Chair',
+            farmName: 'Ferme A',
+            kind: 'broiler',
+            tracksEggs: false,
+            tracksWeight: true,
+            quantityCurrent: 1000,
+            ageDays: 40,
+            lastRecordDate: null,
+            status: 'active',
+          ),
+        );
+
+    await repository.createSale(
+      organisationId: 7,
+      farmId: 1,
+      saleDate: DateTime(2026, 10, 15),
+      lines: const [
+        SaleLine(
+          productName: 'Poulet vif',
+          quantity: 50,
+          unitPrice: 3000,
+          flockId: 3,
+          isLiveBirds: true,
+        ),
+        SaleLine(productName: 'Poulet abattu', quantity: 20, unitPrice: 4000),
+      ],
+    );
+
+    final flock = await (db.select(
+      db.cachedFlocks,
+    )..where((f) => f.id.equals(3))).getSingle();
+    expect(flock.quantityCurrent, 950);
+
+    final payload = decodeSalePayload((await queue.pending(7)).single.payload);
+    final items = (payload['items'] as List).cast<Map<String, dynamic>>();
+    expect(items.first['flock_id'], 3);
+    expect(items.first['is_live_birds'], isTrue);
+    expect(items.last.containsKey('flock_id'), isFalse);
+  });
+
   test('formatXof groupe les milliers', () {
     expect(formatXof(1250000), '1 250 000 XOF');
     expect(formatXof(999), '999 XOF');
