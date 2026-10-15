@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/sync/sync_queue.dart';
+import '../../core/sync/sync_service.dart';
 import '../auth/auth_controller.dart';
+import '../flocks/flocks_screen.dart';
 
 /// Accueil à onglets : bandes, ventes, stocks, alertes. Les écrans arrivent un par un ;
 /// la coque porte déjà le contexte (ferme active), la synchronisation et la déconnexion.
@@ -15,6 +17,7 @@ class HomeShell extends ConsumerStatefulWidget {
 
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _index = 0;
+  int? _syncStartedFor;
 
   static const _tabs = [
     (label: 'Bandes', icon: Icons.egg_outlined, selected: Icons.egg),
@@ -44,6 +47,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     }
 
     final membership = session.membership!;
+
+    // Synchronisation de fond dès que le réseau revient, une fois par organisation
+    if (_syncStartedFor != membership.organisationId) {
+      _syncStartedFor = membership.organisationId;
+      ref
+          .read(syncServiceProvider)
+          .start(
+            organisationId: membership.organisationId,
+            organisationSlug: membership.slug,
+          );
+    }
     final pendingCount =
         ref.watch(_pendingCountProvider(membership.organisationId)).value ?? 0;
     final theme = Theme.of(context);
@@ -109,10 +123,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       body: IndexedStack(
         index: _index,
         children: const [
-          _ComingSoon(
-            title: 'Mes bandes',
-            detail: 'Effectif, âge, dernier relevé et saisie du relevé du jour, même sans réseau.',
-          ),
+          FlocksScreen(),
           _ComingSoon(
             title: 'Ventes',
             detail: 'Facture rapide avec encaissement, clients et produits disponibles hors-ligne.',
