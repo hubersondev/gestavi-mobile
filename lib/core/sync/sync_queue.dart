@@ -32,8 +32,9 @@ class SyncQueueRepository {
     required String type,
     required Map<String, dynamic> payload,
     DateTime? recordedAt,
+    String? clientUuid,
   }) async {
-    final clientUuid = _uuid.v4();
+    clientUuid ??= _uuid.v4();
 
     await _db
         .into(_db.syncQueue)
@@ -95,10 +96,18 @@ class SyncQueueRepository {
 
     var processed = 0;
 
-    for (var offset = 0; offset < entries.length; offset += batchSize) {
-      final batch = entries.sublist(
+    // Les ventes passent une par une sur leur point d'entrée idempotent (POST /sales)
+    final sales = entries.where((e) => e.type == 'sale').toList();
+    final batched = entries.where((e) => e.type != 'sale').toList();
+
+    for (final entry in sales) {
+      processed += await _pushSale(entry, organisationSlug);
+    }
+
+    for (var offset = 0; offset < batched.length; offset += batchSize) {
+      final batch = batched.sublist(
         offset,
-        (offset + batchSize).clamp(0, entries.length),
+        (offset + batchSize).clamp(0, batched.length),
       );
 
       final response = await _api.post(
@@ -146,6 +155,53 @@ class SyncQueueRepository {
 
     return processed;
   }
+
+  /// Envoie une vente ; 201/200 → created, refus métier (422/403) → rejected, réseau → l'erreur remonte.
+  Future<int> _pushSale(SyncQueueData entry, String organisationSlug) async {
+    String status;
+    String? message;
+    int? subjectId;
+
+    try {
+      final response = await _api.post(
+        '/organisations/$organisationSlug/sales',
+        body: jsonDecode(entry.payload) as Map<String, dynamic>,
+      );
+      final data = response['data'] as Map<String, dynamic>? ?? response;
+      status = 'created';
+      subjectId = data['id'] as int?;
+      await onSaleSynced?.call(entry.organisationId, entry.clientUuid, data);
+    } on ApiException catch (e) {
+      if (e.isNetwork) {
+        rethrow;
+      }
+
+      status = 'rejected';
+      message = e.message;
+    }
+
+    await (_db.update(
+      _db.syncQueue,
+    )..where((q) => q.clientUuid.equals(entry.clientUuid))).write(
+      SyncQueueCompanion(
+        status: Value(status),
+        message: Value(message),
+        subjectId: Value(subjectId),
+        attempts: Value(entry.attempts + 1),
+        syncedAt: Value(DateTime.now()),
+      ),
+    );
+
+    return 1;
+  }
+
+  /// Rappel après l'envoi réussi d'une vente (le cache des ventes prend l'identité serveur).
+  Future<void> Function(
+    int organisationId,
+    String clientUuid,
+    Map<String, dynamic> serverSale,
+  )?
+  onSaleSynced;
 
   /// Variante tolérante pour la synchronisation en tâche de fond : avale les erreurs réseau.
   Future<int> pushQuietly({

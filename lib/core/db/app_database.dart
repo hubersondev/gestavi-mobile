@@ -95,6 +95,29 @@ class CachedStocks extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Ventes récentes et ventes saisies localement (statut « local » tant qu'elles ne sont pas
+/// envoyées), pour l'onglet Ventes hors-ligne.
+class CachedSales extends Table {
+  TextColumn get key =>
+      text()(); // identifiant serveur (s-123) ou client_uuid (c-uuid)
+  IntColumn get organisationId => integer()();
+  IntColumn get farmId => integer().nullable()();
+  IntColumn get serverId => integer().nullable()();
+  TextColumn get clientUuid => text().nullable()();
+  TextColumn get invoiceNumber => text().nullable()();
+  TextColumn get saleDate => text()();
+  TextColumn get customerName => text().nullable()();
+  RealColumn get total => real().withDefault(const Constant(0))();
+  RealColumn get paid => real().withDefault(const Constant(0))();
+  TextColumn get status => text()(); // local, pending, partial, paid, cancelled
+  TextColumn get summary =>
+      text().nullable()(); // ex. « 50 plateaux, 20 sujets »
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -103,13 +126,24 @@ class CachedStocks extends Table {
     CachedCustomers,
     CachedProducts,
     CachedStocks,
+    CachedSales,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(cachedSales);
+      }
+    },
+  );
 
   static QueryExecutor _openConnection() => driftDatabase(name: 'gestavi');
 

@@ -2875,6 +2875,774 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
   }
 }
 
+class $CachedSalesTable extends CachedSales
+    with TableInfo<$CachedSalesTable, CachedSale> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedSalesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _organisationIdMeta = const VerificationMeta(
+    'organisationId',
+  );
+  @override
+  late final GeneratedColumn<int> organisationId = GeneratedColumn<int>(
+    'organisation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<int> farmId = GeneratedColumn<int>(
+    'farm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverIdMeta = const VerificationMeta(
+    'serverId',
+  );
+  @override
+  late final GeneratedColumn<int> serverId = GeneratedColumn<int>(
+    'server_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clientUuidMeta = const VerificationMeta(
+    'clientUuid',
+  );
+  @override
+  late final GeneratedColumn<String> clientUuid = GeneratedColumn<String>(
+    'client_uuid',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _invoiceNumberMeta = const VerificationMeta(
+    'invoiceNumber',
+  );
+  @override
+  late final GeneratedColumn<String> invoiceNumber = GeneratedColumn<String>(
+    'invoice_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _saleDateMeta = const VerificationMeta(
+    'saleDate',
+  );
+  @override
+  late final GeneratedColumn<String> saleDate = GeneratedColumn<String>(
+    'sale_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerNameMeta = const VerificationMeta(
+    'customerName',
+  );
+  @override
+  late final GeneratedColumn<String> customerName = GeneratedColumn<String>(
+    'customer_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<double> total = GeneratedColumn<double>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _paidMeta = const VerificationMeta('paid');
+  @override
+  late final GeneratedColumn<double> paid = GeneratedColumn<double>(
+    'paid',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    key,
+    organisationId,
+    farmId,
+    serverId,
+    clientUuid,
+    invoiceNumber,
+    saleDate,
+    customerName,
+    total,
+    paid,
+    status,
+    summary,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_sales';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedSale> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('organisation_id')) {
+      context.handle(
+        _organisationIdMeta,
+        organisationId.isAcceptableOrUnknown(
+          data['organisation_id']!,
+          _organisationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_organisationIdMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    }
+    if (data.containsKey('server_id')) {
+      context.handle(
+        _serverIdMeta,
+        serverId.isAcceptableOrUnknown(data['server_id']!, _serverIdMeta),
+      );
+    }
+    if (data.containsKey('client_uuid')) {
+      context.handle(
+        _clientUuidMeta,
+        clientUuid.isAcceptableOrUnknown(data['client_uuid']!, _clientUuidMeta),
+      );
+    }
+    if (data.containsKey('invoice_number')) {
+      context.handle(
+        _invoiceNumberMeta,
+        invoiceNumber.isAcceptableOrUnknown(
+          data['invoice_number']!,
+          _invoiceNumberMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sale_date')) {
+      context.handle(
+        _saleDateMeta,
+        saleDate.isAcceptableOrUnknown(data['sale_date']!, _saleDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_saleDateMeta);
+    }
+    if (data.containsKey('customer_name')) {
+      context.handle(
+        _customerNameMeta,
+        customerName.isAcceptableOrUnknown(
+          data['customer_name']!,
+          _customerNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    }
+    if (data.containsKey('paid')) {
+      context.handle(
+        _paidMeta,
+        paid.isAcceptableOrUnknown(data['paid']!, _paidMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CachedSale map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedSale(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      organisationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}organisation_id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}farm_id'],
+      ),
+      serverId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_id'],
+      ),
+      clientUuid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}client_uuid'],
+      ),
+      invoiceNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}invoice_number'],
+      ),
+      saleDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sale_date'],
+      )!,
+      customerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_name'],
+      ),
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total'],
+      )!,
+      paid: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}paid'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedSalesTable createAlias(String alias) {
+    return $CachedSalesTable(attachedDatabase, alias);
+  }
+}
+
+class CachedSale extends DataClass implements Insertable<CachedSale> {
+  final String key;
+  final int organisationId;
+  final int? farmId;
+  final int? serverId;
+  final String? clientUuid;
+  final String? invoiceNumber;
+  final String saleDate;
+  final String? customerName;
+  final double total;
+  final double paid;
+  final String status;
+  final String? summary;
+  final DateTime updatedAt;
+  const CachedSale({
+    required this.key,
+    required this.organisationId,
+    this.farmId,
+    this.serverId,
+    this.clientUuid,
+    this.invoiceNumber,
+    required this.saleDate,
+    this.customerName,
+    required this.total,
+    required this.paid,
+    required this.status,
+    this.summary,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['organisation_id'] = Variable<int>(organisationId);
+    if (!nullToAbsent || farmId != null) {
+      map['farm_id'] = Variable<int>(farmId);
+    }
+    if (!nullToAbsent || serverId != null) {
+      map['server_id'] = Variable<int>(serverId);
+    }
+    if (!nullToAbsent || clientUuid != null) {
+      map['client_uuid'] = Variable<String>(clientUuid);
+    }
+    if (!nullToAbsent || invoiceNumber != null) {
+      map['invoice_number'] = Variable<String>(invoiceNumber);
+    }
+    map['sale_date'] = Variable<String>(saleDate);
+    if (!nullToAbsent || customerName != null) {
+      map['customer_name'] = Variable<String>(customerName);
+    }
+    map['total'] = Variable<double>(total);
+    map['paid'] = Variable<double>(paid);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || summary != null) {
+      map['summary'] = Variable<String>(summary);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CachedSalesCompanion toCompanion(bool nullToAbsent) {
+    return CachedSalesCompanion(
+      key: Value(key),
+      organisationId: Value(organisationId),
+      farmId: farmId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(farmId),
+      serverId: serverId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverId),
+      clientUuid: clientUuid == null && nullToAbsent
+          ? const Value.absent()
+          : Value(clientUuid),
+      invoiceNumber: invoiceNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(invoiceNumber),
+      saleDate: Value(saleDate),
+      customerName: customerName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customerName),
+      total: Value(total),
+      paid: Value(paid),
+      status: Value(status),
+      summary: summary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(summary),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CachedSale.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedSale(
+      key: serializer.fromJson<String>(json['key']),
+      organisationId: serializer.fromJson<int>(json['organisationId']),
+      farmId: serializer.fromJson<int?>(json['farmId']),
+      serverId: serializer.fromJson<int?>(json['serverId']),
+      clientUuid: serializer.fromJson<String?>(json['clientUuid']),
+      invoiceNumber: serializer.fromJson<String?>(json['invoiceNumber']),
+      saleDate: serializer.fromJson<String>(json['saleDate']),
+      customerName: serializer.fromJson<String?>(json['customerName']),
+      total: serializer.fromJson<double>(json['total']),
+      paid: serializer.fromJson<double>(json['paid']),
+      status: serializer.fromJson<String>(json['status']),
+      summary: serializer.fromJson<String?>(json['summary']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'organisationId': serializer.toJson<int>(organisationId),
+      'farmId': serializer.toJson<int?>(farmId),
+      'serverId': serializer.toJson<int?>(serverId),
+      'clientUuid': serializer.toJson<String?>(clientUuid),
+      'invoiceNumber': serializer.toJson<String?>(invoiceNumber),
+      'saleDate': serializer.toJson<String>(saleDate),
+      'customerName': serializer.toJson<String?>(customerName),
+      'total': serializer.toJson<double>(total),
+      'paid': serializer.toJson<double>(paid),
+      'status': serializer.toJson<String>(status),
+      'summary': serializer.toJson<String?>(summary),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CachedSale copyWith({
+    String? key,
+    int? organisationId,
+    Value<int?> farmId = const Value.absent(),
+    Value<int?> serverId = const Value.absent(),
+    Value<String?> clientUuid = const Value.absent(),
+    Value<String?> invoiceNumber = const Value.absent(),
+    String? saleDate,
+    Value<String?> customerName = const Value.absent(),
+    double? total,
+    double? paid,
+    String? status,
+    Value<String?> summary = const Value.absent(),
+    DateTime? updatedAt,
+  }) => CachedSale(
+    key: key ?? this.key,
+    organisationId: organisationId ?? this.organisationId,
+    farmId: farmId.present ? farmId.value : this.farmId,
+    serverId: serverId.present ? serverId.value : this.serverId,
+    clientUuid: clientUuid.present ? clientUuid.value : this.clientUuid,
+    invoiceNumber: invoiceNumber.present
+        ? invoiceNumber.value
+        : this.invoiceNumber,
+    saleDate: saleDate ?? this.saleDate,
+    customerName: customerName.present ? customerName.value : this.customerName,
+    total: total ?? this.total,
+    paid: paid ?? this.paid,
+    status: status ?? this.status,
+    summary: summary.present ? summary.value : this.summary,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CachedSale copyWithCompanion(CachedSalesCompanion data) {
+    return CachedSale(
+      key: data.key.present ? data.key.value : this.key,
+      organisationId: data.organisationId.present
+          ? data.organisationId.value
+          : this.organisationId,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      serverId: data.serverId.present ? data.serverId.value : this.serverId,
+      clientUuid: data.clientUuid.present
+          ? data.clientUuid.value
+          : this.clientUuid,
+      invoiceNumber: data.invoiceNumber.present
+          ? data.invoiceNumber.value
+          : this.invoiceNumber,
+      saleDate: data.saleDate.present ? data.saleDate.value : this.saleDate,
+      customerName: data.customerName.present
+          ? data.customerName.value
+          : this.customerName,
+      total: data.total.present ? data.total.value : this.total,
+      paid: data.paid.present ? data.paid.value : this.paid,
+      status: data.status.present ? data.status.value : this.status,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedSale(')
+          ..write('key: $key, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('farmId: $farmId, ')
+          ..write('serverId: $serverId, ')
+          ..write('clientUuid: $clientUuid, ')
+          ..write('invoiceNumber: $invoiceNumber, ')
+          ..write('saleDate: $saleDate, ')
+          ..write('customerName: $customerName, ')
+          ..write('total: $total, ')
+          ..write('paid: $paid, ')
+          ..write('status: $status, ')
+          ..write('summary: $summary, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    key,
+    organisationId,
+    farmId,
+    serverId,
+    clientUuid,
+    invoiceNumber,
+    saleDate,
+    customerName,
+    total,
+    paid,
+    status,
+    summary,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedSale &&
+          other.key == this.key &&
+          other.organisationId == this.organisationId &&
+          other.farmId == this.farmId &&
+          other.serverId == this.serverId &&
+          other.clientUuid == this.clientUuid &&
+          other.invoiceNumber == this.invoiceNumber &&
+          other.saleDate == this.saleDate &&
+          other.customerName == this.customerName &&
+          other.total == this.total &&
+          other.paid == this.paid &&
+          other.status == this.status &&
+          other.summary == this.summary &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CachedSalesCompanion extends UpdateCompanion<CachedSale> {
+  final Value<String> key;
+  final Value<int> organisationId;
+  final Value<int?> farmId;
+  final Value<int?> serverId;
+  final Value<String?> clientUuid;
+  final Value<String?> invoiceNumber;
+  final Value<String> saleDate;
+  final Value<String?> customerName;
+  final Value<double> total;
+  final Value<double> paid;
+  final Value<String> status;
+  final Value<String?> summary;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CachedSalesCompanion({
+    this.key = const Value.absent(),
+    this.organisationId = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.serverId = const Value.absent(),
+    this.clientUuid = const Value.absent(),
+    this.invoiceNumber = const Value.absent(),
+    this.saleDate = const Value.absent(),
+    this.customerName = const Value.absent(),
+    this.total = const Value.absent(),
+    this.paid = const Value.absent(),
+    this.status = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedSalesCompanion.insert({
+    required String key,
+    required int organisationId,
+    this.farmId = const Value.absent(),
+    this.serverId = const Value.absent(),
+    this.clientUuid = const Value.absent(),
+    this.invoiceNumber = const Value.absent(),
+    required String saleDate,
+    this.customerName = const Value.absent(),
+    this.total = const Value.absent(),
+    this.paid = const Value.absent(),
+    required String status,
+    this.summary = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       organisationId = Value(organisationId),
+       saleDate = Value(saleDate),
+       status = Value(status),
+       updatedAt = Value(updatedAt);
+  static Insertable<CachedSale> custom({
+    Expression<String>? key,
+    Expression<int>? organisationId,
+    Expression<int>? farmId,
+    Expression<int>? serverId,
+    Expression<String>? clientUuid,
+    Expression<String>? invoiceNumber,
+    Expression<String>? saleDate,
+    Expression<String>? customerName,
+    Expression<double>? total,
+    Expression<double>? paid,
+    Expression<String>? status,
+    Expression<String>? summary,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (organisationId != null) 'organisation_id': organisationId,
+      if (farmId != null) 'farm_id': farmId,
+      if (serverId != null) 'server_id': serverId,
+      if (clientUuid != null) 'client_uuid': clientUuid,
+      if (invoiceNumber != null) 'invoice_number': invoiceNumber,
+      if (saleDate != null) 'sale_date': saleDate,
+      if (customerName != null) 'customer_name': customerName,
+      if (total != null) 'total': total,
+      if (paid != null) 'paid': paid,
+      if (status != null) 'status': status,
+      if (summary != null) 'summary': summary,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedSalesCompanion copyWith({
+    Value<String>? key,
+    Value<int>? organisationId,
+    Value<int?>? farmId,
+    Value<int?>? serverId,
+    Value<String?>? clientUuid,
+    Value<String?>? invoiceNumber,
+    Value<String>? saleDate,
+    Value<String?>? customerName,
+    Value<double>? total,
+    Value<double>? paid,
+    Value<String>? status,
+    Value<String?>? summary,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedSalesCompanion(
+      key: key ?? this.key,
+      organisationId: organisationId ?? this.organisationId,
+      farmId: farmId ?? this.farmId,
+      serverId: serverId ?? this.serverId,
+      clientUuid: clientUuid ?? this.clientUuid,
+      invoiceNumber: invoiceNumber ?? this.invoiceNumber,
+      saleDate: saleDate ?? this.saleDate,
+      customerName: customerName ?? this.customerName,
+      total: total ?? this.total,
+      paid: paid ?? this.paid,
+      status: status ?? this.status,
+      summary: summary ?? this.summary,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (organisationId.present) {
+      map['organisation_id'] = Variable<int>(organisationId.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<int>(farmId.value);
+    }
+    if (serverId.present) {
+      map['server_id'] = Variable<int>(serverId.value);
+    }
+    if (clientUuid.present) {
+      map['client_uuid'] = Variable<String>(clientUuid.value);
+    }
+    if (invoiceNumber.present) {
+      map['invoice_number'] = Variable<String>(invoiceNumber.value);
+    }
+    if (saleDate.present) {
+      map['sale_date'] = Variable<String>(saleDate.value);
+    }
+    if (customerName.present) {
+      map['customer_name'] = Variable<String>(customerName.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<double>(total.value);
+    }
+    if (paid.present) {
+      map['paid'] = Variable<double>(paid.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedSalesCompanion(')
+          ..write('key: $key, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('farmId: $farmId, ')
+          ..write('serverId: $serverId, ')
+          ..write('clientUuid: $clientUuid, ')
+          ..write('invoiceNumber: $invoiceNumber, ')
+          ..write('saleDate: $saleDate, ')
+          ..write('customerName: $customerName, ')
+          ..write('total: $total, ')
+          ..write('paid: $paid, ')
+          ..write('status: $status, ')
+          ..write('summary: $summary, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2886,6 +3654,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $CachedProductsTable cachedProducts = $CachedProductsTable(this);
   late final $CachedStocksTable cachedStocks = $CachedStocksTable(this);
+  late final $CachedSalesTable cachedSales = $CachedSalesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2897,6 +3666,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cachedCustomers,
     cachedProducts,
     cachedStocks,
+    cachedSales,
   ];
 }
 
@@ -4431,6 +5201,375 @@ typedef $$CachedStocksTableProcessedTableManager =
       CachedStock,
       PrefetchHooks Function()
     >;
+typedef $$CachedSalesTableCreateCompanionBuilder =
+    CachedSalesCompanion Function({
+      required String key,
+      required int organisationId,
+      Value<int?> farmId,
+      Value<int?> serverId,
+      Value<String?> clientUuid,
+      Value<String?> invoiceNumber,
+      required String saleDate,
+      Value<String?> customerName,
+      Value<double> total,
+      Value<double> paid,
+      required String status,
+      Value<String?> summary,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedSalesTableUpdateCompanionBuilder =
+    CachedSalesCompanion Function({
+      Value<String> key,
+      Value<int> organisationId,
+      Value<int?> farmId,
+      Value<int?> serverId,
+      Value<String?> clientUuid,
+      Value<String?> invoiceNumber,
+      Value<String> saleDate,
+      Value<String?> customerName,
+      Value<double> total,
+      Value<double> paid,
+      Value<String> status,
+      Value<String?> summary,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedSalesTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedSalesTable> {
+  $$CachedSalesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverId => $composableBuilder(
+    column: $table.serverId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get invoiceNumber => $composableBuilder(
+    column: $table.invoiceNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get saleDate => $composableBuilder(
+    column: $table.saleDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get paid => $composableBuilder(
+    column: $table.paid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedSalesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedSalesTable> {
+  $$CachedSalesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverId => $composableBuilder(
+    column: $table.serverId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get invoiceNumber => $composableBuilder(
+    column: $table.invoiceNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get saleDate => $composableBuilder(
+    column: $table.saleDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get paid => $composableBuilder(
+    column: $table.paid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedSalesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedSalesTable> {
+  $$CachedSalesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<int> get serverId =>
+      $composableBuilder(column: $table.serverId, builder: (column) => column);
+
+  GeneratedColumn<String> get clientUuid => $composableBuilder(
+    column: $table.clientUuid,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get invoiceNumber => $composableBuilder(
+    column: $table.invoiceNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get saleDate =>
+      $composableBuilder(column: $table.saleDate, builder: (column) => column);
+
+  GeneratedColumn<String> get customerName => $composableBuilder(
+    column: $table.customerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+
+  GeneratedColumn<double> get paid =>
+      $composableBuilder(column: $table.paid, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CachedSalesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedSalesTable,
+          CachedSale,
+          $$CachedSalesTableFilterComposer,
+          $$CachedSalesTableOrderingComposer,
+          $$CachedSalesTableAnnotationComposer,
+          $$CachedSalesTableCreateCompanionBuilder,
+          $$CachedSalesTableUpdateCompanionBuilder,
+          (
+            CachedSale,
+            BaseReferences<_$AppDatabase, $CachedSalesTable, CachedSale>,
+          ),
+          CachedSale,
+          PrefetchHooks Function()
+        > {
+  $$CachedSalesTableTableManager(_$AppDatabase db, $CachedSalesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedSalesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedSalesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedSalesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<int> organisationId = const Value.absent(),
+                Value<int?> farmId = const Value.absent(),
+                Value<int?> serverId = const Value.absent(),
+                Value<String?> clientUuid = const Value.absent(),
+                Value<String?> invoiceNumber = const Value.absent(),
+                Value<String> saleDate = const Value.absent(),
+                Value<String?> customerName = const Value.absent(),
+                Value<double> total = const Value.absent(),
+                Value<double> paid = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> summary = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedSalesCompanion(
+                key: key,
+                organisationId: organisationId,
+                farmId: farmId,
+                serverId: serverId,
+                clientUuid: clientUuid,
+                invoiceNumber: invoiceNumber,
+                saleDate: saleDate,
+                customerName: customerName,
+                total: total,
+                paid: paid,
+                status: status,
+                summary: summary,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required int organisationId,
+                Value<int?> farmId = const Value.absent(),
+                Value<int?> serverId = const Value.absent(),
+                Value<String?> clientUuid = const Value.absent(),
+                Value<String?> invoiceNumber = const Value.absent(),
+                required String saleDate,
+                Value<String?> customerName = const Value.absent(),
+                Value<double> total = const Value.absent(),
+                Value<double> paid = const Value.absent(),
+                required String status,
+                Value<String?> summary = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedSalesCompanion.insert(
+                key: key,
+                organisationId: organisationId,
+                farmId: farmId,
+                serverId: serverId,
+                clientUuid: clientUuid,
+                invoiceNumber: invoiceNumber,
+                saleDate: saleDate,
+                customerName: customerName,
+                total: total,
+                paid: paid,
+                status: status,
+                summary: summary,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedSalesTable, CachedSale>(table),
+                  BaseReferences<_$AppDatabase, $CachedSalesTable, CachedSale>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedSalesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedSalesTable,
+      CachedSale,
+      $$CachedSalesTableFilterComposer,
+      $$CachedSalesTableOrderingComposer,
+      $$CachedSalesTableAnnotationComposer,
+      $$CachedSalesTableCreateCompanionBuilder,
+      $$CachedSalesTableUpdateCompanionBuilder,
+      (
+        CachedSale,
+        BaseReferences<_$AppDatabase, $CachedSalesTable, CachedSale>,
+      ),
+      CachedSale,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4447,4 +5586,6 @@ class $AppDatabaseManager {
       $$CachedProductsTableTableManager(_db, _db.cachedProducts);
   $$CachedStocksTableTableManager get cachedStocks =>
       $$CachedStocksTableTableManager(_db, _db.cachedStocks);
+  $$CachedSalesTableTableManager get cachedSales =>
+      $$CachedSalesTableTableManager(_db, _db.cachedSales);
 }

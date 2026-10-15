@@ -5,6 +5,7 @@ import '../../core/sync/sync_queue.dart';
 import '../../core/sync/sync_service.dart';
 import '../auth/auth_controller.dart';
 import '../flocks/flocks_screen.dart';
+import '../sales/sales_screen.dart';
 
 /// Accueil à onglets : bandes, ventes, stocks, alertes. Les écrans arrivent un par un ;
 /// la coque porte déjà le contexte (ferme active), la synchronisation et la déconnexion.
@@ -124,10 +125,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         index: _index,
         children: const [
           FlocksScreen(),
-          _ComingSoon(
-            title: 'Ventes',
-            detail: 'Facture rapide avec encaissement, clients et produits disponibles hors-ligne.',
-          ),
+          SalesScreen(),
           _ComingSoon(
             title: 'Stocks',
             detail: 'Niveaux par ferme, sorties d\'aliment et de médicaments.',
