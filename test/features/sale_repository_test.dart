@@ -35,11 +35,11 @@ void main() {
     api = _MockApi();
     queue = SyncQueueRepository(db: db, api: api);
     repository = SaleRepository(db: db, api: api, queue: queue);
-    queue.onSaleSynced = (organisationId, clientUuid, serverSale) =>
+    queue.onSynced['sale'] = (organisationId, clientUuid, response) =>
         repository.markSynced(
           organisationId: organisationId,
           clientUuid: clientUuid,
-          serverSale: serverSale,
+          serverSale: response['data'] as Map<String, dynamic>,
         );
   });
 

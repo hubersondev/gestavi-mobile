@@ -351,11 +351,11 @@ final saleRepositoryProvider = Provider<SaleRepository>((ref) {
   );
 
   // Une vente envoyée avec succès prend aussitôt son identité serveur dans le cache
-  queue.onSaleSynced = (organisationId, clientUuid, serverSale) =>
+  queue.onSynced['sale'] = (organisationId, clientUuid, response) =>
       repository.markSynced(
         organisationId: organisationId,
         clientUuid: clientUuid,
-        serverSale: serverSale,
+        serverSale: response['data'] as Map<String, dynamic>? ?? response,
       );
 
   return repository;

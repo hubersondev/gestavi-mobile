@@ -96,12 +96,14 @@ class SyncQueueRepository {
 
     var processed = 0;
 
-    // Les ventes passent une par une sur leur point d'entrée idempotent (POST /sales)
-    final sales = entries.where((e) => e.type == 'sale').toList();
-    final batched = entries.where((e) => e.type != 'sale').toList();
+    // Ventes et mouvements de stock passent un par un sur leur point d'entrée idempotent
+    final singles = entries.where((e) => singleEndpoints.containsKey(e.type));
+    final batched = entries
+        .where((e) => !singleEndpoints.containsKey(e.type))
+        .toList();
 
-    for (final entry in sales) {
-      processed += await _pushSale(entry, organisationSlug);
+    for (final entry in singles) {
+      processed += await _pushSingle(entry, organisationSlug);
     }
 
     for (var offset = 0; offset < batched.length; offset += batchSize) {
@@ -156,21 +158,32 @@ class SyncQueueRepository {
     return processed;
   }
 
-  /// Envoie une vente ; 201/200 → created, refus métier (422/403) → rejected, réseau → l'erreur remonte.
-  Future<int> _pushSale(SyncQueueData entry, String organisationSlug) async {
+  /// Types envoyés un par un, avec le chemin de leur point d'entrée.
+  static const singleEndpoints = <String, String>{
+    'sale': '/sales',
+    'stock_movement': '/stock-movements',
+  };
+
+  /// Envoie une saisie seule ; 201/200 → created (ou duplicate), refus métier (422/403) → rejected,
+  /// réseau → l'erreur remonte et la file reste intacte.
+  Future<int> _pushSingle(SyncQueueData entry, String organisationSlug) async {
     String status;
     String? message;
     int? subjectId;
 
     try {
       final response = await _api.post(
-        '/organisations/$organisationSlug/sales',
+        '/organisations/$organisationSlug${singleEndpoints[entry.type]}',
         body: jsonDecode(entry.payload) as Map<String, dynamic>,
       );
+      status = response['status'] as String? ?? 'created';
       final data = response['data'] as Map<String, dynamic>? ?? response;
-      status = 'created';
-      subjectId = data['id'] as int?;
-      await onSaleSynced?.call(entry.organisationId, entry.clientUuid, data);
+      subjectId = (data['id'] ?? response['movement_id']) as int?;
+      await onSynced[entry.type]?.call(
+        entry.organisationId,
+        entry.clientUuid,
+        response,
+      );
     } on ApiException catch (e) {
       if (e.isNetwork) {
         rethrow;
@@ -195,13 +208,8 @@ class SyncQueueRepository {
     return 1;
   }
 
-  /// Rappel après l'envoi réussi d'une vente (le cache des ventes prend l'identité serveur).
-  Future<void> Function(
-    int organisationId,
-    String clientUuid,
-    Map<String, dynamic> serverSale,
-  )?
-  onSaleSynced;
+  /// Rappels par type après un envoi réussi (le cache local prend l'état renvoyé par le serveur).
+  final onSynced = <String, SyncedCallback>{};
 
   /// Variante tolérante pour la synchronisation en tâche de fond : avale les erreurs réseau.
   Future<int> pushQuietly({
@@ -222,6 +230,12 @@ class SyncQueueRepository {
     }
   }
 }
+
+typedef SyncedCallback = Future<void> Function(
+  int organisationId,
+  String clientUuid,
+  Map<String, dynamic> response,
+);
 
 final syncQueueProvider = Provider<SyncQueueRepository>(
   (ref) => SyncQueueRepository(
