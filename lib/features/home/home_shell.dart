@@ -7,6 +7,7 @@ import '../alerts/alerts_screen.dart';
 import '../alerts/notification_repository.dart';
 import '../auth/auth_controller.dart';
 import '../flocks/flocks_screen.dart';
+import '../onboarding/onboarding_screen.dart';
 import '../sales/sales_screen.dart';
 import '../stocks/stocks_screen.dart';
 
@@ -103,6 +104,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             tooltip: 'Menu',
             onSelected: (value) => switch (value) {
               'farm' => ref.read(authControllerProvider.notifier).changeFarm(),
+              'guide' => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const OnboardingScreen(replay: true),
+                ),
+              ),
               'logout' => ref.read(authControllerProvider.notifier).logout(),
               _ => null,
             },
@@ -112,6 +118,13 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 child: ListTile(
                   leading: Icon(Icons.swap_horiz),
                   title: Text('Changer de ferme'),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'guide',
+                child: ListTile(
+                  leading: Icon(Icons.help_outline),
+                  title: Text('Guide de l’application'),
                 ),
               ),
               PopupMenuItem(

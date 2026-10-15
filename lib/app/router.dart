@@ -6,11 +6,13 @@ import '../features/auth/auth_controller.dart';
 import '../features/auth/login_screen.dart';
 import '../features/farm/farm_screen.dart';
 import '../features/home/home_shell.dart';
+import '../features/onboarding/onboarding_screen.dart';
 
-/// Navigation : connexion → choix de la ferme (si plusieurs) → accueil à onglets.
-/// Les redirections suivent l'état de session.
+/// Navigation : présentation (premier lancement) → connexion → choix de la ferme (si
+/// plusieurs) → accueil à onglets. Les redirections suivent l'état de session.
 final routerProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
+  final onboardingSeen = ref.watch(onboardingSeenProvider);
 
   return GoRouter(
     initialLocation: '/home',
@@ -18,11 +20,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       final session = auth.value;
       final location = state.matchedLocation;
 
-      if (session == null || session is AuthLoading) {
+      if (session == null ||
+          session is AuthLoading ||
+          onboardingSeen.isLoading) {
         return location == '/splash' ? null : '/splash';
       }
 
       if (session is Unauthenticated) {
+        if (!(onboardingSeen.value ?? true)) {
+          return location == '/onboarding' ? null : '/onboarding';
+        }
+
         return location == '/login' ? null : '/login';
       }
 
@@ -37,6 +45,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (location == '/login' ||
+          location == '/onboarding' ||
           location == '/splash' ||
           location == '/farm' ||
           location == '/no-organisation') {
@@ -49,6 +58,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/splash',
         builder: (context, state) => const _SplashScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(

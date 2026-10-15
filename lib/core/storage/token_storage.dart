@@ -8,6 +8,7 @@ class TokenStorage {
 
   static const String _key = 'gestavi.api_token';
   static const String _serverKey = 'gestavi.server_url';
+  static const String _onboardingKey = 'gestavi.onboarding_seen';
 
   final FlutterSecureStorage _storage;
 
@@ -23,4 +24,11 @@ class TokenStorage {
   Future<void> writeServerUrl(String? url) => url == null || url.isEmpty
       ? _storage.delete(key: _serverKey)
       : _storage.write(key: _serverKey, value: url);
+
+  /// Présentation de l'application déjà vue sur cet appareil (survit à la déconnexion).
+  Future<bool> readOnboardingSeen() async =>
+      await _storage.read(key: _onboardingKey) == '1';
+
+  Future<void> markOnboardingSeen() =>
+      _storage.write(key: _onboardingKey, value: '1');
 }
