@@ -69,6 +69,7 @@ void main() {
             unit: 'plateau',
             unitPrice: 2500,
             taxPercent: 0,
+            stockUnitsPerUnit: 1,
             isLiveBirds: false,
           ),
         );
@@ -87,6 +88,7 @@ void main() {
             unit: 'sujet',
             unitPrice: 3000,
             taxPercent: 0,
+            stockUnitsPerUnit: 1,
             isLiveBirds: true,
           ),
         );

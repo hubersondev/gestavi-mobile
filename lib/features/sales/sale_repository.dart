@@ -96,6 +96,11 @@ class SaleRepository {
               (item['default_tax_percent'] as num?)?.toDouble() ?? 0,
             ),
             isLiveBirds: Value(item['is_live_birds'] as bool? ?? false),
+            stockKind: Value(item['stock_kind'] as String?),
+            stockId: Value(item['stock_id'] as int?),
+            stockUnitsPerUnit: Value(
+              (item['stock_units_per_unit'] as num?)?.toDouble() ?? 1,
+            ),
           ),
         )
         .toList();

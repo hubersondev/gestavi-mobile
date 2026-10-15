@@ -9,6 +9,7 @@ import '../auth/auth_controller.dart';
 import '../auth/auth_repository.dart';
 import '../auth/models.dart';
 import '../flocks/flock_repository.dart';
+import '../stocks/stock_repository.dart';
 import 'sale_repository.dart';
 
 /// Vente rapide saisie hors-ligne : client (ou comptant), lignes produit × quantité × prix,
@@ -102,6 +103,19 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
 
     if (lines.isEmpty) {
       _snack('Ajoutez au moins une ligne avec un produit et une quantité.');
+
+      return;
+    }
+
+    final shortage = _lines
+        .where((line) => line.isFilled && line.availableQuantity != null)
+        .where((line) => line.quantity > line.availableQuantity!)
+        .firstOrNull;
+
+    if (shortage != null) {
+      _snack(
+        'Stock insuffisant pour « ${shortage.productName} » : ${formatQuantity(shortage.quantity)} demandé(s), ${formatQuantity(shortage.availableQuantity!)} disponible(s).',
+      );
 
       return;
     }
@@ -207,6 +221,17 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
     final products = organisationId == null
         ? const <CachedProduct>[]
         : ref.watch(productsProvider(organisationId)).value ?? const [];
+    final stocks = organisationId == null
+        ? const <CachedStock>[]
+        : ref
+                  .watch(
+                    stocksProvider((
+                      organisationId: organisationId,
+                      farmId: _farmId,
+                    )),
+                  )
+                  .value ??
+              const [];
     final flocks = organisationId == null
         ? const <CachedFlock>[]
         : ref
@@ -281,6 +306,8 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                   line: _lines[i],
                   products: products,
                   flocks: flocks,
+                  stocks: stocks,
+                  farmId: _farmId,
                   canRemove: _lines.length > 1,
                   onChanged: () => setState(() {}),
                   onRemove: () => setState(() => _lines.removeAt(i).dispose()),
@@ -398,6 +425,9 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
 class _LineDraft {
   CachedProduct? product;
   CachedFlock? flock;
+
+  /// Quantité vendable d'après le stock en cache, null si le produit n'est pas suivi
+  double? availableQuantity;
   final quantityController = TextEditingController();
   final priceController = TextEditingController();
 
@@ -422,6 +452,8 @@ class _LineCard extends StatelessWidget {
     required this.line,
     required this.products,
     required this.flocks,
+    required this.stocks,
+    required this.farmId,
     required this.canRemove,
     required this.onChanged,
     required this.onRemove,
@@ -430,6 +462,8 @@ class _LineCard extends StatelessWidget {
   final _LineDraft line;
   final List<CachedProduct> products;
   final List<CachedFlock> flocks;
+  final List<CachedStock> stocks;
+  final int? farmId;
   final bool canRemove;
   final VoidCallback onChanged;
   final VoidCallback onRemove;
@@ -437,6 +471,15 @@ class _LineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final product = line.product;
+    final stock = product == null
+        ? null
+        : trackedStockFor(product, farmId, stocks);
+    line.availableQuantity = product != null && stock != null
+        ? sellableQuantity(product, stock)
+        : null;
+    final available = line.availableQuantity;
+    final short = available != null && line.quantity > available;
 
     return Card(
       child: Padding(
@@ -554,6 +597,20 @@ class _LineCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (available != null) ...[
+              const SizedBox(height: 6),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  short
+                      ? 'Stock insuffisant : ${formatQuantity(available)} ${product?.unit ?? ''} disponible(s)'
+                      : 'En stock : ${formatQuantity(available)} ${product?.unit ?? ''}',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: short ? GestaviTheme.danger : GestaviTheme.inkMuted,
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerRight,

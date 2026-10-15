@@ -148,7 +148,36 @@ class StockRepository {
     unit: item['unit'] as String? ?? '',
     quantity: Value((item['quantity'] as num?)?.toDouble() ?? 0),
     minQuantity: Value((item['min_quantity'] as num?)?.toDouble() ?? 0),
+    kind: Value(item['kind'] as String?),
   );
+}
+
+/// Stock débité par la vente d'un produit sur une ferme : stock d'œufs de la ferme, ou stock lié.
+CachedStock? trackedStockFor(
+  CachedProduct product,
+  int? farmId,
+  List<CachedStock> stocks,
+) {
+  if (product.stockKind == 'eggs') {
+    return farmId == null
+        ? null
+        : stocks
+              .where((s) => s.farmId == farmId && s.kind == 'eggs')
+              .firstOrNull;
+  }
+
+  return product.stockId == null
+      ? null
+      : stocks.where((s) => s.id == product.stockId).firstOrNull;
+}
+
+/// Quantité vendable d'un produit suivi avec le stock en cache (unités entières pour un produit
+/// groupé comme le plateau de 30, deux décimales sinon).
+double sellableQuantity(CachedProduct product, CachedStock stock) {
+  final factor = product.stockUnitsPerUnit > 0 ? product.stockUnitsPerUnit : 1;
+  final raw = stock.quantity / factor;
+
+  return factor > 1 ? raw.floorToDouble() : (raw * 100).floorToDouble() / 100;
 }
 
 /// Motifs de mouvement de l'API, par sens.

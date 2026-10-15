@@ -2004,6 +2004,41 @@ class $CachedProductsTable extends CachedProducts
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _stockKindMeta = const VerificationMeta(
+    'stockKind',
+  );
+  @override
+  late final GeneratedColumn<String> stockKind = GeneratedColumn<String>(
+    'stock_kind',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stockIdMeta = const VerificationMeta(
+    'stockId',
+  );
+  @override
+  late final GeneratedColumn<int> stockId = GeneratedColumn<int>(
+    'stock_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stockUnitsPerUnitMeta = const VerificationMeta(
+    'stockUnitsPerUnit',
+  );
+  @override
+  late final GeneratedColumn<double> stockUnitsPerUnit =
+      GeneratedColumn<double>(
+        'stock_units_per_unit',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(1),
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2013,6 +2048,9 @@ class $CachedProductsTable extends CachedProducts
     unitPrice,
     taxPercent,
     isLiveBirds,
+    stockKind,
+    stockId,
+    stockUnitsPerUnit,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2075,6 +2113,27 @@ class $CachedProductsTable extends CachedProducts
         ),
       );
     }
+    if (data.containsKey('stock_kind')) {
+      context.handle(
+        _stockKindMeta,
+        stockKind.isAcceptableOrUnknown(data['stock_kind']!, _stockKindMeta),
+      );
+    }
+    if (data.containsKey('stock_id')) {
+      context.handle(
+        _stockIdMeta,
+        stockId.isAcceptableOrUnknown(data['stock_id']!, _stockIdMeta),
+      );
+    }
+    if (data.containsKey('stock_units_per_unit')) {
+      context.handle(
+        _stockUnitsPerUnitMeta,
+        stockUnitsPerUnit.isAcceptableOrUnknown(
+          data['stock_units_per_unit']!,
+          _stockUnitsPerUnitMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2112,6 +2171,18 @@ class $CachedProductsTable extends CachedProducts
         DriftSqlType.bool,
         data['${effectivePrefix}is_live_birds'],
       )!,
+      stockKind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stock_kind'],
+      ),
+      stockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stock_id'],
+      ),
+      stockUnitsPerUnit: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}stock_units_per_unit'],
+      )!,
     );
   }
 
@@ -2129,6 +2200,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
   final double unitPrice;
   final double taxPercent;
   final bool isLiveBirds;
+  final String? stockKind;
+  final int? stockId;
+  final double stockUnitsPerUnit;
   const CachedProduct({
     required this.id,
     required this.organisationId,
@@ -2137,6 +2211,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
     required this.unitPrice,
     required this.taxPercent,
     required this.isLiveBirds,
+    this.stockKind,
+    this.stockId,
+    required this.stockUnitsPerUnit,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2150,6 +2227,13 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
     map['unit_price'] = Variable<double>(unitPrice);
     map['tax_percent'] = Variable<double>(taxPercent);
     map['is_live_birds'] = Variable<bool>(isLiveBirds);
+    if (!nullToAbsent || stockKind != null) {
+      map['stock_kind'] = Variable<String>(stockKind);
+    }
+    if (!nullToAbsent || stockId != null) {
+      map['stock_id'] = Variable<int>(stockId);
+    }
+    map['stock_units_per_unit'] = Variable<double>(stockUnitsPerUnit);
     return map;
   }
 
@@ -2162,6 +2246,13 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
       unitPrice: Value(unitPrice),
       taxPercent: Value(taxPercent),
       isLiveBirds: Value(isLiveBirds),
+      stockKind: stockKind == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stockKind),
+      stockId: stockId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stockId),
+      stockUnitsPerUnit: Value(stockUnitsPerUnit),
     );
   }
 
@@ -2178,6 +2269,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
       unitPrice: serializer.fromJson<double>(json['unitPrice']),
       taxPercent: serializer.fromJson<double>(json['taxPercent']),
       isLiveBirds: serializer.fromJson<bool>(json['isLiveBirds']),
+      stockKind: serializer.fromJson<String?>(json['stockKind']),
+      stockId: serializer.fromJson<int?>(json['stockId']),
+      stockUnitsPerUnit: serializer.fromJson<double>(json['stockUnitsPerUnit']),
     );
   }
   @override
@@ -2191,6 +2285,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
       'unitPrice': serializer.toJson<double>(unitPrice),
       'taxPercent': serializer.toJson<double>(taxPercent),
       'isLiveBirds': serializer.toJson<bool>(isLiveBirds),
+      'stockKind': serializer.toJson<String?>(stockKind),
+      'stockId': serializer.toJson<int?>(stockId),
+      'stockUnitsPerUnit': serializer.toJson<double>(stockUnitsPerUnit),
     };
   }
 
@@ -2202,6 +2299,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
     double? unitPrice,
     double? taxPercent,
     bool? isLiveBirds,
+    Value<String?> stockKind = const Value.absent(),
+    Value<int?> stockId = const Value.absent(),
+    double? stockUnitsPerUnit,
   }) => CachedProduct(
     id: id ?? this.id,
     organisationId: organisationId ?? this.organisationId,
@@ -2210,6 +2310,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
     unitPrice: unitPrice ?? this.unitPrice,
     taxPercent: taxPercent ?? this.taxPercent,
     isLiveBirds: isLiveBirds ?? this.isLiveBirds,
+    stockKind: stockKind.present ? stockKind.value : this.stockKind,
+    stockId: stockId.present ? stockId.value : this.stockId,
+    stockUnitsPerUnit: stockUnitsPerUnit ?? this.stockUnitsPerUnit,
   );
   CachedProduct copyWithCompanion(CachedProductsCompanion data) {
     return CachedProduct(
@@ -2226,6 +2329,11 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
       isLiveBirds: data.isLiveBirds.present
           ? data.isLiveBirds.value
           : this.isLiveBirds,
+      stockKind: data.stockKind.present ? data.stockKind.value : this.stockKind,
+      stockId: data.stockId.present ? data.stockId.value : this.stockId,
+      stockUnitsPerUnit: data.stockUnitsPerUnit.present
+          ? data.stockUnitsPerUnit.value
+          : this.stockUnitsPerUnit,
     );
   }
 
@@ -2238,7 +2346,10 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
           ..write('unit: $unit, ')
           ..write('unitPrice: $unitPrice, ')
           ..write('taxPercent: $taxPercent, ')
-          ..write('isLiveBirds: $isLiveBirds')
+          ..write('isLiveBirds: $isLiveBirds, ')
+          ..write('stockKind: $stockKind, ')
+          ..write('stockId: $stockId, ')
+          ..write('stockUnitsPerUnit: $stockUnitsPerUnit')
           ..write(')'))
         .toString();
   }
@@ -2252,6 +2363,9 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
     unitPrice,
     taxPercent,
     isLiveBirds,
+    stockKind,
+    stockId,
+    stockUnitsPerUnit,
   );
   @override
   bool operator ==(Object other) =>
@@ -2263,7 +2377,10 @@ class CachedProduct extends DataClass implements Insertable<CachedProduct> {
           other.unit == this.unit &&
           other.unitPrice == this.unitPrice &&
           other.taxPercent == this.taxPercent &&
-          other.isLiveBirds == this.isLiveBirds);
+          other.isLiveBirds == this.isLiveBirds &&
+          other.stockKind == this.stockKind &&
+          other.stockId == this.stockId &&
+          other.stockUnitsPerUnit == this.stockUnitsPerUnit);
 }
 
 class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
@@ -2274,6 +2391,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
   final Value<double> unitPrice;
   final Value<double> taxPercent;
   final Value<bool> isLiveBirds;
+  final Value<String?> stockKind;
+  final Value<int?> stockId;
+  final Value<double> stockUnitsPerUnit;
   const CachedProductsCompanion({
     this.id = const Value.absent(),
     this.organisationId = const Value.absent(),
@@ -2282,6 +2402,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
     this.unitPrice = const Value.absent(),
     this.taxPercent = const Value.absent(),
     this.isLiveBirds = const Value.absent(),
+    this.stockKind = const Value.absent(),
+    this.stockId = const Value.absent(),
+    this.stockUnitsPerUnit = const Value.absent(),
   });
   CachedProductsCompanion.insert({
     this.id = const Value.absent(),
@@ -2291,6 +2414,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
     this.unitPrice = const Value.absent(),
     this.taxPercent = const Value.absent(),
     this.isLiveBirds = const Value.absent(),
+    this.stockKind = const Value.absent(),
+    this.stockId = const Value.absent(),
+    this.stockUnitsPerUnit = const Value.absent(),
   }) : organisationId = Value(organisationId),
        name = Value(name);
   static Insertable<CachedProduct> custom({
@@ -2301,6 +2427,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
     Expression<double>? unitPrice,
     Expression<double>? taxPercent,
     Expression<bool>? isLiveBirds,
+    Expression<String>? stockKind,
+    Expression<int>? stockId,
+    Expression<double>? stockUnitsPerUnit,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2310,6 +2439,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
       if (unitPrice != null) 'unit_price': unitPrice,
       if (taxPercent != null) 'tax_percent': taxPercent,
       if (isLiveBirds != null) 'is_live_birds': isLiveBirds,
+      if (stockKind != null) 'stock_kind': stockKind,
+      if (stockId != null) 'stock_id': stockId,
+      if (stockUnitsPerUnit != null) 'stock_units_per_unit': stockUnitsPerUnit,
     });
   }
 
@@ -2321,6 +2453,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
     Value<double>? unitPrice,
     Value<double>? taxPercent,
     Value<bool>? isLiveBirds,
+    Value<String?>? stockKind,
+    Value<int?>? stockId,
+    Value<double>? stockUnitsPerUnit,
   }) {
     return CachedProductsCompanion(
       id: id ?? this.id,
@@ -2330,6 +2465,9 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
       unitPrice: unitPrice ?? this.unitPrice,
       taxPercent: taxPercent ?? this.taxPercent,
       isLiveBirds: isLiveBirds ?? this.isLiveBirds,
+      stockKind: stockKind ?? this.stockKind,
+      stockId: stockId ?? this.stockId,
+      stockUnitsPerUnit: stockUnitsPerUnit ?? this.stockUnitsPerUnit,
     );
   }
 
@@ -2357,6 +2495,15 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
     if (isLiveBirds.present) {
       map['is_live_birds'] = Variable<bool>(isLiveBirds.value);
     }
+    if (stockKind.present) {
+      map['stock_kind'] = Variable<String>(stockKind.value);
+    }
+    if (stockId.present) {
+      map['stock_id'] = Variable<int>(stockId.value);
+    }
+    if (stockUnitsPerUnit.present) {
+      map['stock_units_per_unit'] = Variable<double>(stockUnitsPerUnit.value);
+    }
     return map;
   }
 
@@ -2369,7 +2516,10 @@ class CachedProductsCompanion extends UpdateCompanion<CachedProduct> {
           ..write('unit: $unit, ')
           ..write('unitPrice: $unitPrice, ')
           ..write('taxPercent: $taxPercent, ')
-          ..write('isLiveBirds: $isLiveBirds')
+          ..write('isLiveBirds: $isLiveBirds, ')
+          ..write('stockKind: $stockKind, ')
+          ..write('stockId: $stockId, ')
+          ..write('stockUnitsPerUnit: $stockUnitsPerUnit')
           ..write(')'))
         .toString();
   }
@@ -2463,6 +2613,15 @@ class $CachedStocksTable extends CachedStocks
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2473,6 +2632,7 @@ class $CachedStocksTable extends CachedStocks
     unit,
     quantity,
     minQuantity,
+    kind,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2543,6 +2703,12 @@ class $CachedStocksTable extends CachedStocks
         ),
       );
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
     return context;
   }
 
@@ -2584,6 +2750,10 @@ class $CachedStocksTable extends CachedStocks
         DriftSqlType.double,
         data['${effectivePrefix}min_quantity'],
       )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      ),
     );
   }
 
@@ -2602,6 +2772,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
   final String unit;
   final double quantity;
   final double minQuantity;
+  final String? kind;
   const CachedStock({
     required this.id,
     required this.organisationId,
@@ -2611,6 +2782,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
     required this.unit,
     required this.quantity,
     required this.minQuantity,
+    this.kind,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2627,6 +2799,9 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
     map['unit'] = Variable<String>(unit);
     map['quantity'] = Variable<double>(quantity);
     map['min_quantity'] = Variable<double>(minQuantity);
+    if (!nullToAbsent || kind != null) {
+      map['kind'] = Variable<String>(kind);
+    }
     return map;
   }
 
@@ -2644,6 +2819,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
       unit: Value(unit),
       quantity: Value(quantity),
       minQuantity: Value(minQuantity),
+      kind: kind == null && nullToAbsent ? const Value.absent() : Value(kind),
     );
   }
 
@@ -2661,6 +2837,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
       unit: serializer.fromJson<String>(json['unit']),
       quantity: serializer.fromJson<double>(json['quantity']),
       minQuantity: serializer.fromJson<double>(json['minQuantity']),
+      kind: serializer.fromJson<String?>(json['kind']),
     );
   }
   @override
@@ -2675,6 +2852,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
       'unit': serializer.toJson<String>(unit),
       'quantity': serializer.toJson<double>(quantity),
       'minQuantity': serializer.toJson<double>(minQuantity),
+      'kind': serializer.toJson<String?>(kind),
     };
   }
 
@@ -2687,6 +2865,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
     String? unit,
     double? quantity,
     double? minQuantity,
+    Value<String?> kind = const Value.absent(),
   }) => CachedStock(
     id: id ?? this.id,
     organisationId: organisationId ?? this.organisationId,
@@ -2696,6 +2875,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
     unit: unit ?? this.unit,
     quantity: quantity ?? this.quantity,
     minQuantity: minQuantity ?? this.minQuantity,
+    kind: kind.present ? kind.value : this.kind,
   );
   CachedStock copyWithCompanion(CachedStocksCompanion data) {
     return CachedStock(
@@ -2711,6 +2891,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
       minQuantity: data.minQuantity.present
           ? data.minQuantity.value
           : this.minQuantity,
+      kind: data.kind.present ? data.kind.value : this.kind,
     );
   }
 
@@ -2724,7 +2905,8 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
           ..write('category: $category, ')
           ..write('unit: $unit, ')
           ..write('quantity: $quantity, ')
-          ..write('minQuantity: $minQuantity')
+          ..write('minQuantity: $minQuantity, ')
+          ..write('kind: $kind')
           ..write(')'))
         .toString();
   }
@@ -2739,6 +2921,7 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
     unit,
     quantity,
     minQuantity,
+    kind,
   );
   @override
   bool operator ==(Object other) =>
@@ -2751,7 +2934,8 @@ class CachedStock extends DataClass implements Insertable<CachedStock> {
           other.category == this.category &&
           other.unit == this.unit &&
           other.quantity == this.quantity &&
-          other.minQuantity == this.minQuantity);
+          other.minQuantity == this.minQuantity &&
+          other.kind == this.kind);
 }
 
 class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
@@ -2763,6 +2947,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
   final Value<String> unit;
   final Value<double> quantity;
   final Value<double> minQuantity;
+  final Value<String?> kind;
   const CachedStocksCompanion({
     this.id = const Value.absent(),
     this.organisationId = const Value.absent(),
@@ -2772,6 +2957,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
     this.unit = const Value.absent(),
     this.quantity = const Value.absent(),
     this.minQuantity = const Value.absent(),
+    this.kind = const Value.absent(),
   });
   CachedStocksCompanion.insert({
     this.id = const Value.absent(),
@@ -2782,6 +2968,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
     required String unit,
     this.quantity = const Value.absent(),
     this.minQuantity = const Value.absent(),
+    this.kind = const Value.absent(),
   }) : organisationId = Value(organisationId),
        name = Value(name),
        unit = Value(unit);
@@ -2794,6 +2981,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
     Expression<String>? unit,
     Expression<double>? quantity,
     Expression<double>? minQuantity,
+    Expression<String>? kind,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2804,6 +2992,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
       if (unit != null) 'unit': unit,
       if (quantity != null) 'quantity': quantity,
       if (minQuantity != null) 'min_quantity': minQuantity,
+      if (kind != null) 'kind': kind,
     });
   }
 
@@ -2816,6 +3005,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
     Value<String>? unit,
     Value<double>? quantity,
     Value<double>? minQuantity,
+    Value<String?>? kind,
   }) {
     return CachedStocksCompanion(
       id: id ?? this.id,
@@ -2826,6 +3016,7 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
       unit: unit ?? this.unit,
       quantity: quantity ?? this.quantity,
       minQuantity: minQuantity ?? this.minQuantity,
+      kind: kind ?? this.kind,
     );
   }
 
@@ -2856,6 +3047,9 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
     if (minQuantity.present) {
       map['min_quantity'] = Variable<double>(minQuantity.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
     return map;
   }
 
@@ -2869,7 +3063,8 @@ class CachedStocksCompanion extends UpdateCompanion<CachedStock> {
           ..write('category: $category, ')
           ..write('unit: $unit, ')
           ..write('quantity: $quantity, ')
-          ..write('minQuantity: $minQuantity')
+          ..write('minQuantity: $minQuantity, ')
+          ..write('kind: $kind')
           ..write(')'))
         .toString();
   }
@@ -5931,6 +6126,9 @@ typedef $$CachedProductsTableCreateCompanionBuilder =
       Value<double> unitPrice,
       Value<double> taxPercent,
       Value<bool> isLiveBirds,
+      Value<String?> stockKind,
+      Value<int?> stockId,
+      Value<double> stockUnitsPerUnit,
     });
 typedef $$CachedProductsTableUpdateCompanionBuilder =
     CachedProductsCompanion Function({
@@ -5941,6 +6139,9 @@ typedef $$CachedProductsTableUpdateCompanionBuilder =
       Value<double> unitPrice,
       Value<double> taxPercent,
       Value<bool> isLiveBirds,
+      Value<String?> stockKind,
+      Value<int?> stockId,
+      Value<double> stockUnitsPerUnit,
     });
 
 class $$CachedProductsTableFilterComposer
@@ -5984,6 +6185,21 @@ class $$CachedProductsTableFilterComposer
 
   ColumnFilters<bool> get isLiveBirds => $composableBuilder(
     column: $table.isLiveBirds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stockKind => $composableBuilder(
+    column: $table.stockKind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get stockId => $composableBuilder(
+    column: $table.stockId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get stockUnitsPerUnit => $composableBuilder(
+    column: $table.stockUnitsPerUnit,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6031,6 +6247,21 @@ class $$CachedProductsTableOrderingComposer
     column: $table.isLiveBirds,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get stockKind => $composableBuilder(
+    column: $table.stockKind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get stockId => $composableBuilder(
+    column: $table.stockId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get stockUnitsPerUnit => $composableBuilder(
+    column: $table.stockUnitsPerUnit,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CachedProductsTableAnnotationComposer
@@ -6066,6 +6297,17 @@ class $$CachedProductsTableAnnotationComposer
 
   GeneratedColumn<bool> get isLiveBirds => $composableBuilder(
     column: $table.isLiveBirds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get stockKind =>
+      $composableBuilder(column: $table.stockKind, builder: (column) => column);
+
+  GeneratedColumn<int> get stockId =>
+      $composableBuilder(column: $table.stockId, builder: (column) => column);
+
+  GeneratedColumn<double> get stockUnitsPerUnit => $composableBuilder(
+    column: $table.stockUnitsPerUnit,
     builder: (column) => column,
   );
 }
@@ -6110,6 +6352,9 @@ class $$CachedProductsTableTableManager
                 Value<double> unitPrice = const Value.absent(),
                 Value<double> taxPercent = const Value.absent(),
                 Value<bool> isLiveBirds = const Value.absent(),
+                Value<String?> stockKind = const Value.absent(),
+                Value<int?> stockId = const Value.absent(),
+                Value<double> stockUnitsPerUnit = const Value.absent(),
               }) => CachedProductsCompanion(
                 id: id,
                 organisationId: organisationId,
@@ -6118,6 +6363,9 @@ class $$CachedProductsTableTableManager
                 unitPrice: unitPrice,
                 taxPercent: taxPercent,
                 isLiveBirds: isLiveBirds,
+                stockKind: stockKind,
+                stockId: stockId,
+                stockUnitsPerUnit: stockUnitsPerUnit,
               ),
           createCompanionCallback:
               ({
@@ -6128,6 +6376,9 @@ class $$CachedProductsTableTableManager
                 Value<double> unitPrice = const Value.absent(),
                 Value<double> taxPercent = const Value.absent(),
                 Value<bool> isLiveBirds = const Value.absent(),
+                Value<String?> stockKind = const Value.absent(),
+                Value<int?> stockId = const Value.absent(),
+                Value<double> stockUnitsPerUnit = const Value.absent(),
               }) => CachedProductsCompanion.insert(
                 id: id,
                 organisationId: organisationId,
@@ -6136,6 +6387,9 @@ class $$CachedProductsTableTableManager
                 unitPrice: unitPrice,
                 taxPercent: taxPercent,
                 isLiveBirds: isLiveBirds,
+                stockKind: stockKind,
+                stockId: stockId,
+                stockUnitsPerUnit: stockUnitsPerUnit,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -6181,6 +6435,7 @@ typedef $$CachedStocksTableCreateCompanionBuilder =
       required String unit,
       Value<double> quantity,
       Value<double> minQuantity,
+      Value<String?> kind,
     });
 typedef $$CachedStocksTableUpdateCompanionBuilder =
     CachedStocksCompanion Function({
@@ -6192,6 +6447,7 @@ typedef $$CachedStocksTableUpdateCompanionBuilder =
       Value<String> unit,
       Value<double> quantity,
       Value<double> minQuantity,
+      Value<String?> kind,
     });
 
 class $$CachedStocksTableFilterComposer
@@ -6240,6 +6496,11 @@ class $$CachedStocksTableFilterComposer
 
   ColumnFilters<double> get minQuantity => $composableBuilder(
     column: $table.minQuantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6292,6 +6553,11 @@ class $$CachedStocksTableOrderingComposer
     column: $table.minQuantity,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CachedStocksTableAnnotationComposer
@@ -6330,6 +6596,9 @@ class $$CachedStocksTableAnnotationComposer
     column: $table.minQuantity,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
 }
 
 class $$CachedStocksTableTableManager
@@ -6371,6 +6640,7 @@ class $$CachedStocksTableTableManager
                 Value<String> unit = const Value.absent(),
                 Value<double> quantity = const Value.absent(),
                 Value<double> minQuantity = const Value.absent(),
+                Value<String?> kind = const Value.absent(),
               }) => CachedStocksCompanion(
                 id: id,
                 organisationId: organisationId,
@@ -6380,6 +6650,7 @@ class $$CachedStocksTableTableManager
                 unit: unit,
                 quantity: quantity,
                 minQuantity: minQuantity,
+                kind: kind,
               ),
           createCompanionCallback:
               ({
@@ -6391,6 +6662,7 @@ class $$CachedStocksTableTableManager
                 required String unit,
                 Value<double> quantity = const Value.absent(),
                 Value<double> minQuantity = const Value.absent(),
+                Value<String?> kind = const Value.absent(),
               }) => CachedStocksCompanion.insert(
                 id: id,
                 organisationId: organisationId,
@@ -6400,6 +6672,7 @@ class $$CachedStocksTableTableManager
                 unit: unit,
                 quantity: quantity,
                 minQuantity: minQuantity,
+                kind: kind,
               ),
           withReferenceMapper: (p0) => p0
               .map(

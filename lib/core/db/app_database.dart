@@ -75,6 +75,10 @@ class CachedProducts extends Table {
   RealColumn get unitPrice => real().withDefault(const Constant(0))();
   RealColumn get taxPercent => real().withDefault(const Constant(0))();
   BoolColumn get isLiveBirds => boolean().withDefault(const Constant(false))();
+  // Stock suivi : 'eggs' = stock d'œufs de la ferme qui vend, sinon stockId explicite
+  TextColumn get stockKind => text().nullable()();
+  IntColumn get stockId => integer().nullable()();
+  RealColumn get stockUnitsPerUnit => real().withDefault(const Constant(1))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -90,6 +94,8 @@ class CachedStocks extends Table {
   TextColumn get unit => text()();
   RealColumn get quantity => real().withDefault(const Constant(0))();
   RealColumn get minQuantity => real().withDefault(const Constant(0))();
+  TextColumn get kind =>
+      text().nullable()(); // 'eggs' pour le stock d'œufs de la ferme
 
   @override
   Set<Column> get primaryKey => {id};
@@ -171,7 +177,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -185,6 +191,12 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await m.createTable(cachedVaccinations);
+      }
+      if (from < 5) {
+        await m.addColumn(cachedProducts, cachedProducts.stockKind);
+        await m.addColumn(cachedProducts, cachedProducts.stockId);
+        await m.addColumn(cachedProducts, cachedProducts.stockUnitsPerUnit);
+        await m.addColumn(cachedStocks, cachedStocks.kind);
       }
     },
   );
