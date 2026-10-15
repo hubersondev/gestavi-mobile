@@ -65,6 +65,9 @@ void main() {
     client = ApiClient(tokens: tokens, dio: dio);
     when(() => storage.read(key: any(named: 'key')))
         .thenAnswer((_) async => 'jeton-test');
+    // Pas d'adresse de serveur enregistrée : celle de la compilation s'applique
+    when(() => storage.read(key: 'gestavi.server_url'))
+        .thenAnswer((_) async => null);
   });
 
   test('ajoute le jeton porteur et renvoie le corps JSON', () async {

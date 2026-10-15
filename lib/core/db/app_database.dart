@@ -133,6 +133,27 @@ class CachedNotifications extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// Vaccinations et traitements à faire sur les bandes en cache ; une vaccination validée sur le
+/// téléphone passe en « done » localement en attendant la synchronisation.
+class CachedVaccinations extends Table {
+  IntColumn get id => integer()();
+  IntColumn get organisationId => integer()();
+  IntColumn get flockId => integer()();
+  IntColumn get farmId => integer().nullable()();
+  TextColumn get flockCode => text().nullable()();
+  TextColumn get treatmentName => text()();
+  TextColumn get treatmentType => text().nullable()();
+  TextColumn get administrationRoute => text().nullable()();
+  TextColumn get dosage => text().nullable()();
+  TextColumn get scheduledDate => text()();
+  TextColumn get administeredDate => text().nullable()();
+  TextColumn get status => text()(); // pending, delayed, done, skipped
+  BoolColumn get isOverdue => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -143,13 +164,14 @@ class CachedNotifications extends Table {
     CachedStocks,
     CachedSales,
     CachedNotifications,
+    CachedVaccinations,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -160,6 +182,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await m.createTable(cachedNotifications);
+      }
+      if (from < 4) {
+        await m.createTable(cachedVaccinations);
       }
     },
   );

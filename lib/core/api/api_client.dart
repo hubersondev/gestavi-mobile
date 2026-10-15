@@ -25,6 +25,12 @@ class ApiClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          // Adresse du serveur modifiable depuis l'écran de connexion, sans recompiler
+          final serverUrl = await _tokens.readServerUrl();
+          if (serverUrl != null && serverUrl.isNotEmpty) {
+            options.baseUrl = AppConfig.apiBaseFor(serverUrl);
+          }
+
           final token = await _tokens.read();
           if (token != null && !options.headers.containsKey('Authorization')) {
             options.headers['Authorization'] = 'Bearer $token';

@@ -12,7 +12,14 @@ class AppConfig {
 
   static const String apiVersion = 'v1';
 
-  static String get apiBase => '$apiUrl/api/$apiVersion';
+  static String get apiBase => apiBaseFor(apiUrl);
+
+  /// Base des appels pour une adresse de serveur donnée, sans barre finale.
+  static String apiBaseFor(String serverUrl) {
+    final trimmed = serverUrl.trim().replaceAll(RegExp(r'/+$'), '');
+
+    return '$trimmed/api/$apiVersion';
+  }
 
   static const Duration connectTimeout = Duration(seconds: 15);
 

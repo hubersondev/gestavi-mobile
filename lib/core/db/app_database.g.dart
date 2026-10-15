@@ -4092,6 +4092,785 @@ class CachedNotificationsCompanion extends UpdateCompanion<CachedNotification> {
   }
 }
 
+class $CachedVaccinationsTable extends CachedVaccinations
+    with TableInfo<$CachedVaccinationsTable, CachedVaccination> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedVaccinationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _organisationIdMeta = const VerificationMeta(
+    'organisationId',
+  );
+  @override
+  late final GeneratedColumn<int> organisationId = GeneratedColumn<int>(
+    'organisation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flockIdMeta = const VerificationMeta(
+    'flockId',
+  );
+  @override
+  late final GeneratedColumn<int> flockId = GeneratedColumn<int>(
+    'flock_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<int> farmId = GeneratedColumn<int>(
+    'farm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _flockCodeMeta = const VerificationMeta(
+    'flockCode',
+  );
+  @override
+  late final GeneratedColumn<String> flockCode = GeneratedColumn<String>(
+    'flock_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _treatmentNameMeta = const VerificationMeta(
+    'treatmentName',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentName = GeneratedColumn<String>(
+    'treatment_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _treatmentTypeMeta = const VerificationMeta(
+    'treatmentType',
+  );
+  @override
+  late final GeneratedColumn<String> treatmentType = GeneratedColumn<String>(
+    'treatment_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _administrationRouteMeta =
+      const VerificationMeta('administrationRoute');
+  @override
+  late final GeneratedColumn<String> administrationRoute =
+      GeneratedColumn<String>(
+        'administration_route',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dosageMeta = const VerificationMeta('dosage');
+  @override
+  late final GeneratedColumn<String> dosage = GeneratedColumn<String>(
+    'dosage',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scheduledDateMeta = const VerificationMeta(
+    'scheduledDate',
+  );
+  @override
+  late final GeneratedColumn<String> scheduledDate = GeneratedColumn<String>(
+    'scheduled_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _administeredDateMeta = const VerificationMeta(
+    'administeredDate',
+  );
+  @override
+  late final GeneratedColumn<String> administeredDate = GeneratedColumn<String>(
+    'administered_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isOverdueMeta = const VerificationMeta(
+    'isOverdue',
+  );
+  @override
+  late final GeneratedColumn<bool> isOverdue = GeneratedColumn<bool>(
+    'is_overdue',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_overdue" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    organisationId,
+    flockId,
+    farmId,
+    flockCode,
+    treatmentName,
+    treatmentType,
+    administrationRoute,
+    dosage,
+    scheduledDate,
+    administeredDate,
+    status,
+    isOverdue,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_vaccinations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedVaccination> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('organisation_id')) {
+      context.handle(
+        _organisationIdMeta,
+        organisationId.isAcceptableOrUnknown(
+          data['organisation_id']!,
+          _organisationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_organisationIdMeta);
+    }
+    if (data.containsKey('flock_id')) {
+      context.handle(
+        _flockIdMeta,
+        flockId.isAcceptableOrUnknown(data['flock_id']!, _flockIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flockIdMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    }
+    if (data.containsKey('flock_code')) {
+      context.handle(
+        _flockCodeMeta,
+        flockCode.isAcceptableOrUnknown(data['flock_code']!, _flockCodeMeta),
+      );
+    }
+    if (data.containsKey('treatment_name')) {
+      context.handle(
+        _treatmentNameMeta,
+        treatmentName.isAcceptableOrUnknown(
+          data['treatment_name']!,
+          _treatmentNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_treatmentNameMeta);
+    }
+    if (data.containsKey('treatment_type')) {
+      context.handle(
+        _treatmentTypeMeta,
+        treatmentType.isAcceptableOrUnknown(
+          data['treatment_type']!,
+          _treatmentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('administration_route')) {
+      context.handle(
+        _administrationRouteMeta,
+        administrationRoute.isAcceptableOrUnknown(
+          data['administration_route']!,
+          _administrationRouteMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dosage')) {
+      context.handle(
+        _dosageMeta,
+        dosage.isAcceptableOrUnknown(data['dosage']!, _dosageMeta),
+      );
+    }
+    if (data.containsKey('scheduled_date')) {
+      context.handle(
+        _scheduledDateMeta,
+        scheduledDate.isAcceptableOrUnknown(
+          data['scheduled_date']!,
+          _scheduledDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_scheduledDateMeta);
+    }
+    if (data.containsKey('administered_date')) {
+      context.handle(
+        _administeredDateMeta,
+        administeredDate.isAcceptableOrUnknown(
+          data['administered_date']!,
+          _administeredDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('is_overdue')) {
+      context.handle(
+        _isOverdueMeta,
+        isOverdue.isAcceptableOrUnknown(data['is_overdue']!, _isOverdueMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CachedVaccination map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedVaccination(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      organisationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}organisation_id'],
+      )!,
+      flockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}flock_id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}farm_id'],
+      ),
+      flockCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flock_code'],
+      ),
+      treatmentName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_name'],
+      )!,
+      treatmentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatment_type'],
+      ),
+      administrationRoute: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}administration_route'],
+      ),
+      dosage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dosage'],
+      ),
+      scheduledDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scheduled_date'],
+      )!,
+      administeredDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}administered_date'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      isOverdue: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_overdue'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedVaccinationsTable createAlias(String alias) {
+    return $CachedVaccinationsTable(attachedDatabase, alias);
+  }
+}
+
+class CachedVaccination extends DataClass
+    implements Insertable<CachedVaccination> {
+  final int id;
+  final int organisationId;
+  final int flockId;
+  final int? farmId;
+  final String? flockCode;
+  final String treatmentName;
+  final String? treatmentType;
+  final String? administrationRoute;
+  final String? dosage;
+  final String scheduledDate;
+  final String? administeredDate;
+  final String status;
+  final bool isOverdue;
+  const CachedVaccination({
+    required this.id,
+    required this.organisationId,
+    required this.flockId,
+    this.farmId,
+    this.flockCode,
+    required this.treatmentName,
+    this.treatmentType,
+    this.administrationRoute,
+    this.dosage,
+    required this.scheduledDate,
+    this.administeredDate,
+    required this.status,
+    required this.isOverdue,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['organisation_id'] = Variable<int>(organisationId);
+    map['flock_id'] = Variable<int>(flockId);
+    if (!nullToAbsent || farmId != null) {
+      map['farm_id'] = Variable<int>(farmId);
+    }
+    if (!nullToAbsent || flockCode != null) {
+      map['flock_code'] = Variable<String>(flockCode);
+    }
+    map['treatment_name'] = Variable<String>(treatmentName);
+    if (!nullToAbsent || treatmentType != null) {
+      map['treatment_type'] = Variable<String>(treatmentType);
+    }
+    if (!nullToAbsent || administrationRoute != null) {
+      map['administration_route'] = Variable<String>(administrationRoute);
+    }
+    if (!nullToAbsent || dosage != null) {
+      map['dosage'] = Variable<String>(dosage);
+    }
+    map['scheduled_date'] = Variable<String>(scheduledDate);
+    if (!nullToAbsent || administeredDate != null) {
+      map['administered_date'] = Variable<String>(administeredDate);
+    }
+    map['status'] = Variable<String>(status);
+    map['is_overdue'] = Variable<bool>(isOverdue);
+    return map;
+  }
+
+  CachedVaccinationsCompanion toCompanion(bool nullToAbsent) {
+    return CachedVaccinationsCompanion(
+      id: Value(id),
+      organisationId: Value(organisationId),
+      flockId: Value(flockId),
+      farmId: farmId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(farmId),
+      flockCode: flockCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(flockCode),
+      treatmentName: Value(treatmentName),
+      treatmentType: treatmentType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(treatmentType),
+      administrationRoute: administrationRoute == null && nullToAbsent
+          ? const Value.absent()
+          : Value(administrationRoute),
+      dosage: dosage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dosage),
+      scheduledDate: Value(scheduledDate),
+      administeredDate: administeredDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(administeredDate),
+      status: Value(status),
+      isOverdue: Value(isOverdue),
+    );
+  }
+
+  factory CachedVaccination.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedVaccination(
+      id: serializer.fromJson<int>(json['id']),
+      organisationId: serializer.fromJson<int>(json['organisationId']),
+      flockId: serializer.fromJson<int>(json['flockId']),
+      farmId: serializer.fromJson<int?>(json['farmId']),
+      flockCode: serializer.fromJson<String?>(json['flockCode']),
+      treatmentName: serializer.fromJson<String>(json['treatmentName']),
+      treatmentType: serializer.fromJson<String?>(json['treatmentType']),
+      administrationRoute: serializer.fromJson<String?>(
+        json['administrationRoute'],
+      ),
+      dosage: serializer.fromJson<String?>(json['dosage']),
+      scheduledDate: serializer.fromJson<String>(json['scheduledDate']),
+      administeredDate: serializer.fromJson<String?>(json['administeredDate']),
+      status: serializer.fromJson<String>(json['status']),
+      isOverdue: serializer.fromJson<bool>(json['isOverdue']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'organisationId': serializer.toJson<int>(organisationId),
+      'flockId': serializer.toJson<int>(flockId),
+      'farmId': serializer.toJson<int?>(farmId),
+      'flockCode': serializer.toJson<String?>(flockCode),
+      'treatmentName': serializer.toJson<String>(treatmentName),
+      'treatmentType': serializer.toJson<String?>(treatmentType),
+      'administrationRoute': serializer.toJson<String?>(administrationRoute),
+      'dosage': serializer.toJson<String?>(dosage),
+      'scheduledDate': serializer.toJson<String>(scheduledDate),
+      'administeredDate': serializer.toJson<String?>(administeredDate),
+      'status': serializer.toJson<String>(status),
+      'isOverdue': serializer.toJson<bool>(isOverdue),
+    };
+  }
+
+  CachedVaccination copyWith({
+    int? id,
+    int? organisationId,
+    int? flockId,
+    Value<int?> farmId = const Value.absent(),
+    Value<String?> flockCode = const Value.absent(),
+    String? treatmentName,
+    Value<String?> treatmentType = const Value.absent(),
+    Value<String?> administrationRoute = const Value.absent(),
+    Value<String?> dosage = const Value.absent(),
+    String? scheduledDate,
+    Value<String?> administeredDate = const Value.absent(),
+    String? status,
+    bool? isOverdue,
+  }) => CachedVaccination(
+    id: id ?? this.id,
+    organisationId: organisationId ?? this.organisationId,
+    flockId: flockId ?? this.flockId,
+    farmId: farmId.present ? farmId.value : this.farmId,
+    flockCode: flockCode.present ? flockCode.value : this.flockCode,
+    treatmentName: treatmentName ?? this.treatmentName,
+    treatmentType: treatmentType.present
+        ? treatmentType.value
+        : this.treatmentType,
+    administrationRoute: administrationRoute.present
+        ? administrationRoute.value
+        : this.administrationRoute,
+    dosage: dosage.present ? dosage.value : this.dosage,
+    scheduledDate: scheduledDate ?? this.scheduledDate,
+    administeredDate: administeredDate.present
+        ? administeredDate.value
+        : this.administeredDate,
+    status: status ?? this.status,
+    isOverdue: isOverdue ?? this.isOverdue,
+  );
+  CachedVaccination copyWithCompanion(CachedVaccinationsCompanion data) {
+    return CachedVaccination(
+      id: data.id.present ? data.id.value : this.id,
+      organisationId: data.organisationId.present
+          ? data.organisationId.value
+          : this.organisationId,
+      flockId: data.flockId.present ? data.flockId.value : this.flockId,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      flockCode: data.flockCode.present ? data.flockCode.value : this.flockCode,
+      treatmentName: data.treatmentName.present
+          ? data.treatmentName.value
+          : this.treatmentName,
+      treatmentType: data.treatmentType.present
+          ? data.treatmentType.value
+          : this.treatmentType,
+      administrationRoute: data.administrationRoute.present
+          ? data.administrationRoute.value
+          : this.administrationRoute,
+      dosage: data.dosage.present ? data.dosage.value : this.dosage,
+      scheduledDate: data.scheduledDate.present
+          ? data.scheduledDate.value
+          : this.scheduledDate,
+      administeredDate: data.administeredDate.present
+          ? data.administeredDate.value
+          : this.administeredDate,
+      status: data.status.present ? data.status.value : this.status,
+      isOverdue: data.isOverdue.present ? data.isOverdue.value : this.isOverdue,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedVaccination(')
+          ..write('id: $id, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('flockId: $flockId, ')
+          ..write('farmId: $farmId, ')
+          ..write('flockCode: $flockCode, ')
+          ..write('treatmentName: $treatmentName, ')
+          ..write('treatmentType: $treatmentType, ')
+          ..write('administrationRoute: $administrationRoute, ')
+          ..write('dosage: $dosage, ')
+          ..write('scheduledDate: $scheduledDate, ')
+          ..write('administeredDate: $administeredDate, ')
+          ..write('status: $status, ')
+          ..write('isOverdue: $isOverdue')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    organisationId,
+    flockId,
+    farmId,
+    flockCode,
+    treatmentName,
+    treatmentType,
+    administrationRoute,
+    dosage,
+    scheduledDate,
+    administeredDate,
+    status,
+    isOverdue,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedVaccination &&
+          other.id == this.id &&
+          other.organisationId == this.organisationId &&
+          other.flockId == this.flockId &&
+          other.farmId == this.farmId &&
+          other.flockCode == this.flockCode &&
+          other.treatmentName == this.treatmentName &&
+          other.treatmentType == this.treatmentType &&
+          other.administrationRoute == this.administrationRoute &&
+          other.dosage == this.dosage &&
+          other.scheduledDate == this.scheduledDate &&
+          other.administeredDate == this.administeredDate &&
+          other.status == this.status &&
+          other.isOverdue == this.isOverdue);
+}
+
+class CachedVaccinationsCompanion extends UpdateCompanion<CachedVaccination> {
+  final Value<int> id;
+  final Value<int> organisationId;
+  final Value<int> flockId;
+  final Value<int?> farmId;
+  final Value<String?> flockCode;
+  final Value<String> treatmentName;
+  final Value<String?> treatmentType;
+  final Value<String?> administrationRoute;
+  final Value<String?> dosage;
+  final Value<String> scheduledDate;
+  final Value<String?> administeredDate;
+  final Value<String> status;
+  final Value<bool> isOverdue;
+  const CachedVaccinationsCompanion({
+    this.id = const Value.absent(),
+    this.organisationId = const Value.absent(),
+    this.flockId = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.flockCode = const Value.absent(),
+    this.treatmentName = const Value.absent(),
+    this.treatmentType = const Value.absent(),
+    this.administrationRoute = const Value.absent(),
+    this.dosage = const Value.absent(),
+    this.scheduledDate = const Value.absent(),
+    this.administeredDate = const Value.absent(),
+    this.status = const Value.absent(),
+    this.isOverdue = const Value.absent(),
+  });
+  CachedVaccinationsCompanion.insert({
+    this.id = const Value.absent(),
+    required int organisationId,
+    required int flockId,
+    this.farmId = const Value.absent(),
+    this.flockCode = const Value.absent(),
+    required String treatmentName,
+    this.treatmentType = const Value.absent(),
+    this.administrationRoute = const Value.absent(),
+    this.dosage = const Value.absent(),
+    required String scheduledDate,
+    this.administeredDate = const Value.absent(),
+    required String status,
+    this.isOverdue = const Value.absent(),
+  }) : organisationId = Value(organisationId),
+       flockId = Value(flockId),
+       treatmentName = Value(treatmentName),
+       scheduledDate = Value(scheduledDate),
+       status = Value(status);
+  static Insertable<CachedVaccination> custom({
+    Expression<int>? id,
+    Expression<int>? organisationId,
+    Expression<int>? flockId,
+    Expression<int>? farmId,
+    Expression<String>? flockCode,
+    Expression<String>? treatmentName,
+    Expression<String>? treatmentType,
+    Expression<String>? administrationRoute,
+    Expression<String>? dosage,
+    Expression<String>? scheduledDate,
+    Expression<String>? administeredDate,
+    Expression<String>? status,
+    Expression<bool>? isOverdue,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (organisationId != null) 'organisation_id': organisationId,
+      if (flockId != null) 'flock_id': flockId,
+      if (farmId != null) 'farm_id': farmId,
+      if (flockCode != null) 'flock_code': flockCode,
+      if (treatmentName != null) 'treatment_name': treatmentName,
+      if (treatmentType != null) 'treatment_type': treatmentType,
+      if (administrationRoute != null)
+        'administration_route': administrationRoute,
+      if (dosage != null) 'dosage': dosage,
+      if (scheduledDate != null) 'scheduled_date': scheduledDate,
+      if (administeredDate != null) 'administered_date': administeredDate,
+      if (status != null) 'status': status,
+      if (isOverdue != null) 'is_overdue': isOverdue,
+    });
+  }
+
+  CachedVaccinationsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? organisationId,
+    Value<int>? flockId,
+    Value<int?>? farmId,
+    Value<String?>? flockCode,
+    Value<String>? treatmentName,
+    Value<String?>? treatmentType,
+    Value<String?>? administrationRoute,
+    Value<String?>? dosage,
+    Value<String>? scheduledDate,
+    Value<String?>? administeredDate,
+    Value<String>? status,
+    Value<bool>? isOverdue,
+  }) {
+    return CachedVaccinationsCompanion(
+      id: id ?? this.id,
+      organisationId: organisationId ?? this.organisationId,
+      flockId: flockId ?? this.flockId,
+      farmId: farmId ?? this.farmId,
+      flockCode: flockCode ?? this.flockCode,
+      treatmentName: treatmentName ?? this.treatmentName,
+      treatmentType: treatmentType ?? this.treatmentType,
+      administrationRoute: administrationRoute ?? this.administrationRoute,
+      dosage: dosage ?? this.dosage,
+      scheduledDate: scheduledDate ?? this.scheduledDate,
+      administeredDate: administeredDate ?? this.administeredDate,
+      status: status ?? this.status,
+      isOverdue: isOverdue ?? this.isOverdue,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (organisationId.present) {
+      map['organisation_id'] = Variable<int>(organisationId.value);
+    }
+    if (flockId.present) {
+      map['flock_id'] = Variable<int>(flockId.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<int>(farmId.value);
+    }
+    if (flockCode.present) {
+      map['flock_code'] = Variable<String>(flockCode.value);
+    }
+    if (treatmentName.present) {
+      map['treatment_name'] = Variable<String>(treatmentName.value);
+    }
+    if (treatmentType.present) {
+      map['treatment_type'] = Variable<String>(treatmentType.value);
+    }
+    if (administrationRoute.present) {
+      map['administration_route'] = Variable<String>(administrationRoute.value);
+    }
+    if (dosage.present) {
+      map['dosage'] = Variable<String>(dosage.value);
+    }
+    if (scheduledDate.present) {
+      map['scheduled_date'] = Variable<String>(scheduledDate.value);
+    }
+    if (administeredDate.present) {
+      map['administered_date'] = Variable<String>(administeredDate.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (isOverdue.present) {
+      map['is_overdue'] = Variable<bool>(isOverdue.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedVaccinationsCompanion(')
+          ..write('id: $id, ')
+          ..write('organisationId: $organisationId, ')
+          ..write('flockId: $flockId, ')
+          ..write('farmId: $farmId, ')
+          ..write('flockCode: $flockCode, ')
+          ..write('treatmentName: $treatmentName, ')
+          ..write('treatmentType: $treatmentType, ')
+          ..write('administrationRoute: $administrationRoute, ')
+          ..write('dosage: $dosage, ')
+          ..write('scheduledDate: $scheduledDate, ')
+          ..write('administeredDate: $administeredDate, ')
+          ..write('status: $status, ')
+          ..write('isOverdue: $isOverdue')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4106,6 +4885,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CachedSalesTable cachedSales = $CachedSalesTable(this);
   late final $CachedNotificationsTable cachedNotifications =
       $CachedNotificationsTable(this);
+  late final $CachedVaccinationsTable cachedVaccinations =
+      $CachedVaccinationsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4119,6 +4900,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cachedStocks,
     cachedSales,
     cachedNotifications,
+    cachedVaccinations,
   ];
 }
 
@@ -6287,6 +7069,388 @@ typedef $$CachedNotificationsTableProcessedTableManager =
       CachedNotification,
       PrefetchHooks Function()
     >;
+typedef $$CachedVaccinationsTableCreateCompanionBuilder =
+    CachedVaccinationsCompanion Function({
+      Value<int> id,
+      required int organisationId,
+      required int flockId,
+      Value<int?> farmId,
+      Value<String?> flockCode,
+      required String treatmentName,
+      Value<String?> treatmentType,
+      Value<String?> administrationRoute,
+      Value<String?> dosage,
+      required String scheduledDate,
+      Value<String?> administeredDate,
+      required String status,
+      Value<bool> isOverdue,
+    });
+typedef $$CachedVaccinationsTableUpdateCompanionBuilder =
+    CachedVaccinationsCompanion Function({
+      Value<int> id,
+      Value<int> organisationId,
+      Value<int> flockId,
+      Value<int?> farmId,
+      Value<String?> flockCode,
+      Value<String> treatmentName,
+      Value<String?> treatmentType,
+      Value<String?> administrationRoute,
+      Value<String?> dosage,
+      Value<String> scheduledDate,
+      Value<String?> administeredDate,
+      Value<String> status,
+      Value<bool> isOverdue,
+    });
+
+class $$CachedVaccinationsTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedVaccinationsTable> {
+  $$CachedVaccinationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get flockCode => $composableBuilder(
+    column: $table.flockCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentName => $composableBuilder(
+    column: $table.treatmentName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatmentType => $composableBuilder(
+    column: $table.treatmentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get administrationRoute => $composableBuilder(
+    column: $table.administrationRoute,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scheduledDate => $composableBuilder(
+    column: $table.scheduledDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get administeredDate => $composableBuilder(
+    column: $table.administeredDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isOverdue => $composableBuilder(
+    column: $table.isOverdue,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedVaccinationsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedVaccinationsTable> {
+  $$CachedVaccinationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get flockCode => $composableBuilder(
+    column: $table.flockCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentName => $composableBuilder(
+    column: $table.treatmentName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatmentType => $composableBuilder(
+    column: $table.treatmentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get administrationRoute => $composableBuilder(
+    column: $table.administrationRoute,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dosage => $composableBuilder(
+    column: $table.dosage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scheduledDate => $composableBuilder(
+    column: $table.scheduledDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get administeredDate => $composableBuilder(
+    column: $table.administeredDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isOverdue => $composableBuilder(
+    column: $table.isOverdue,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedVaccinationsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedVaccinationsTable> {
+  $$CachedVaccinationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get organisationId => $composableBuilder(
+    column: $table.organisationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get flockId =>
+      $composableBuilder(column: $table.flockId, builder: (column) => column);
+
+  GeneratedColumn<int> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<String> get flockCode =>
+      $composableBuilder(column: $table.flockCode, builder: (column) => column);
+
+  GeneratedColumn<String> get treatmentName => $composableBuilder(
+    column: $table.treatmentName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get treatmentType => $composableBuilder(
+    column: $table.treatmentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get administrationRoute => $composableBuilder(
+    column: $table.administrationRoute,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dosage =>
+      $composableBuilder(column: $table.dosage, builder: (column) => column);
+
+  GeneratedColumn<String> get scheduledDate => $composableBuilder(
+    column: $table.scheduledDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get administeredDate => $composableBuilder(
+    column: $table.administeredDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<bool> get isOverdue =>
+      $composableBuilder(column: $table.isOverdue, builder: (column) => column);
+}
+
+class $$CachedVaccinationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedVaccinationsTable,
+          CachedVaccination,
+          $$CachedVaccinationsTableFilterComposer,
+          $$CachedVaccinationsTableOrderingComposer,
+          $$CachedVaccinationsTableAnnotationComposer,
+          $$CachedVaccinationsTableCreateCompanionBuilder,
+          $$CachedVaccinationsTableUpdateCompanionBuilder,
+          (
+            CachedVaccination,
+            BaseReferences<
+              _$AppDatabase,
+              $CachedVaccinationsTable,
+              CachedVaccination
+            >,
+          ),
+          CachedVaccination,
+          PrefetchHooks Function()
+        > {
+  $$CachedVaccinationsTableTableManager(
+    _$AppDatabase db,
+    $CachedVaccinationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedVaccinationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedVaccinationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedVaccinationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> organisationId = const Value.absent(),
+                Value<int> flockId = const Value.absent(),
+                Value<int?> farmId = const Value.absent(),
+                Value<String?> flockCode = const Value.absent(),
+                Value<String> treatmentName = const Value.absent(),
+                Value<String?> treatmentType = const Value.absent(),
+                Value<String?> administrationRoute = const Value.absent(),
+                Value<String?> dosage = const Value.absent(),
+                Value<String> scheduledDate = const Value.absent(),
+                Value<String?> administeredDate = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<bool> isOverdue = const Value.absent(),
+              }) => CachedVaccinationsCompanion(
+                id: id,
+                organisationId: organisationId,
+                flockId: flockId,
+                farmId: farmId,
+                flockCode: flockCode,
+                treatmentName: treatmentName,
+                treatmentType: treatmentType,
+                administrationRoute: administrationRoute,
+                dosage: dosage,
+                scheduledDate: scheduledDate,
+                administeredDate: administeredDate,
+                status: status,
+                isOverdue: isOverdue,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int organisationId,
+                required int flockId,
+                Value<int?> farmId = const Value.absent(),
+                Value<String?> flockCode = const Value.absent(),
+                required String treatmentName,
+                Value<String?> treatmentType = const Value.absent(),
+                Value<String?> administrationRoute = const Value.absent(),
+                Value<String?> dosage = const Value.absent(),
+                required String scheduledDate,
+                Value<String?> administeredDate = const Value.absent(),
+                required String status,
+                Value<bool> isOverdue = const Value.absent(),
+              }) => CachedVaccinationsCompanion.insert(
+                id: id,
+                organisationId: organisationId,
+                flockId: flockId,
+                farmId: farmId,
+                flockCode: flockCode,
+                treatmentName: treatmentName,
+                treatmentType: treatmentType,
+                administrationRoute: administrationRoute,
+                dosage: dosage,
+                scheduledDate: scheduledDate,
+                administeredDate: administeredDate,
+                status: status,
+                isOverdue: isOverdue,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedVaccinationsTable, CachedVaccination>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CachedVaccinationsTable,
+                    CachedVaccination
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedVaccinationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedVaccinationsTable,
+      CachedVaccination,
+      $$CachedVaccinationsTableFilterComposer,
+      $$CachedVaccinationsTableOrderingComposer,
+      $$CachedVaccinationsTableAnnotationComposer,
+      $$CachedVaccinationsTableCreateCompanionBuilder,
+      $$CachedVaccinationsTableUpdateCompanionBuilder,
+      (
+        CachedVaccination,
+        BaseReferences<
+          _$AppDatabase,
+          $CachedVaccinationsTable,
+          CachedVaccination
+        >,
+      ),
+      CachedVaccination,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6307,4 +7471,6 @@ class $AppDatabaseManager {
       $$CachedSalesTableTableManager(_db, _db.cachedSales);
   $$CachedNotificationsTableTableManager get cachedNotifications =>
       $$CachedNotificationsTableTableManager(_db, _db.cachedNotifications);
+  $$CachedVaccinationsTableTableManager get cachedVaccinations =>
+      $$CachedVaccinationsTableTableManager(_db, _db.cachedVaccinations);
 }
