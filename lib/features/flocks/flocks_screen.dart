@@ -179,6 +179,27 @@ class _FlockCard extends ConsumerWidget {
                   ),
                 ],
               ),
+              if (forecastSummary(flock) case final summary?) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.insights_outlined,
+                      size: 16,
+                      color: GestaviTheme.info,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        summary,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: GestaviTheme.info,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 10),
               Row(
                 children: [

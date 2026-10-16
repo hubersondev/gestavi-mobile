@@ -49,6 +49,8 @@ class CachedFlocks extends Table {
   IntColumn get ageDays => integer().nullable()();
   TextColumn get lastRecordDate => text().nullable()();
   TextColumn get status => text()();
+  // Prévisions à J+7 renvoyées par l'API (JSON par grandeur : value, unit, confidence…)
+  TextColumn get forecast => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -204,7 +206,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -230,6 +232,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 7) {
         await m.addColumn(cachedDailyRecords, cachedDailyRecords.thefts);
+      }
+      if (from < 8) {
+        await m.addColumn(cachedFlocks, cachedFlocks.forecast);
       }
     },
   );

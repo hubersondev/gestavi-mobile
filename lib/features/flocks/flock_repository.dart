@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -244,6 +246,11 @@ class FlockRepository {
     ageDays: Value(json['age_days'] as int?),
     lastRecordDate: Value(json['last_record_date'] as String?),
     status: json['status'] as String? ?? 'active',
+    forecast: Value(
+      json['forecast'] is Map && (json['forecast'] as Map).isNotEmpty
+          ? jsonEncode(json['forecast'])
+          : null,
+    ),
   );
 }
 
@@ -273,6 +280,47 @@ final flocksProvider =
           .watch(flockRepositoryProvider)
           .watch(organisationId: scope.organisationId, farmId: scope.farmId),
     );
+
+/// Résumé lisible des prévisions à 7 jours d'une bande (« ponte 91 % · mortalité 2,4 % »),
+/// null sans prévision en cache.
+String? forecastSummary(CachedFlock flock) {
+  final raw = flock.forecast;
+
+  if (raw == null || raw.isEmpty) {
+    return null;
+  }
+
+  final decoded = jsonDecode(raw);
+
+  if (decoded is! Map) {
+    return null;
+  }
+
+  String fmt(num value, String unit) => unit == '%'
+      ? '${value.toStringAsFixed(1).replaceAll('.', ',')} %'
+      : '${value.round()} $unit';
+
+  final parts = <String>[];
+  const order = ['laying_rate', 'weight', 'mortality', 'feed_per_bird'];
+  const labels = {
+    'laying_rate': 'ponte',
+    'weight': 'poids',
+    'mortality': 'mortalité',
+    'feed_per_bird': 'aliment/sujet',
+  };
+
+  for (final key in order) {
+    final entry = decoded[key];
+
+    if (entry is Map && entry['value'] is num) {
+      parts.add(
+        '${labels[key]} ${fmt(entry['value'] as num, (entry['unit'] as String?) ?? '')}',
+      );
+    }
+  }
+
+  return parts.isEmpty ? null : 'Dans 7 j : ${parts.join(' · ')}';
+}
 
 /// Message d'erreur réseau lisible, ou null si l'exception n'est pas réseau.
 String? networkMessage(Object error) =>

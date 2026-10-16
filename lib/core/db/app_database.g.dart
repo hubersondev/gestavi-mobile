@@ -971,6 +971,17 @@ class $CachedFlocksTable extends CachedFlocks
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _forecastMeta = const VerificationMeta(
+    'forecast',
+  );
+  @override
+  late final GeneratedColumn<String> forecast = GeneratedColumn<String>(
+    'forecast',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -986,6 +997,7 @@ class $CachedFlocksTable extends CachedFlocks
     ageDays,
     lastRecordDate,
     status,
+    forecast,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1094,6 +1106,12 @@ class $CachedFlocksTable extends CachedFlocks
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
+    if (data.containsKey('forecast')) {
+      context.handle(
+        _forecastMeta,
+        forecast.isAcceptableOrUnknown(data['forecast']!, _forecastMeta),
+      );
+    }
     return context;
   }
 
@@ -1155,6 +1173,10 @@ class $CachedFlocksTable extends CachedFlocks
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      forecast: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}forecast'],
+      ),
     );
   }
 
@@ -1178,6 +1200,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
   final int? ageDays;
   final String? lastRecordDate;
   final String status;
+  final String? forecast;
   const CachedFlock({
     required this.id,
     required this.organisationId,
@@ -1192,6 +1215,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
     this.ageDays,
     this.lastRecordDate,
     required this.status,
+    this.forecast,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1219,6 +1243,9 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
       map['last_record_date'] = Variable<String>(lastRecordDate);
     }
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || forecast != null) {
+      map['forecast'] = Variable<String>(forecast);
+    }
     return map;
   }
 
@@ -1245,6 +1272,9 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
           ? const Value.absent()
           : Value(lastRecordDate),
       status: Value(status),
+      forecast: forecast == null && nullToAbsent
+          ? const Value.absent()
+          : Value(forecast),
     );
   }
 
@@ -1267,6 +1297,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
       ageDays: serializer.fromJson<int?>(json['ageDays']),
       lastRecordDate: serializer.fromJson<String?>(json['lastRecordDate']),
       status: serializer.fromJson<String>(json['status']),
+      forecast: serializer.fromJson<String?>(json['forecast']),
     );
   }
   @override
@@ -1286,6 +1317,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
       'ageDays': serializer.toJson<int?>(ageDays),
       'lastRecordDate': serializer.toJson<String?>(lastRecordDate),
       'status': serializer.toJson<String>(status),
+      'forecast': serializer.toJson<String?>(forecast),
     };
   }
 
@@ -1303,6 +1335,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
     Value<int?> ageDays = const Value.absent(),
     Value<String?> lastRecordDate = const Value.absent(),
     String? status,
+    Value<String?> forecast = const Value.absent(),
   }) => CachedFlock(
     id: id ?? this.id,
     organisationId: organisationId ?? this.organisationId,
@@ -1319,6 +1352,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
         ? lastRecordDate.value
         : this.lastRecordDate,
     status: status ?? this.status,
+    forecast: forecast.present ? forecast.value : this.forecast,
   );
   CachedFlock copyWithCompanion(CachedFlocksCompanion data) {
     return CachedFlock(
@@ -1345,6 +1379,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
           ? data.lastRecordDate.value
           : this.lastRecordDate,
       status: data.status.present ? data.status.value : this.status,
+      forecast: data.forecast.present ? data.forecast.value : this.forecast,
     );
   }
 
@@ -1363,7 +1398,8 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
           ..write('quantityCurrent: $quantityCurrent, ')
           ..write('ageDays: $ageDays, ')
           ..write('lastRecordDate: $lastRecordDate, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('forecast: $forecast')
           ..write(')'))
         .toString();
   }
@@ -1383,6 +1419,7 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
     ageDays,
     lastRecordDate,
     status,
+    forecast,
   );
   @override
   bool operator ==(Object other) =>
@@ -1400,7 +1437,8 @@ class CachedFlock extends DataClass implements Insertable<CachedFlock> {
           other.quantityCurrent == this.quantityCurrent &&
           other.ageDays == this.ageDays &&
           other.lastRecordDate == this.lastRecordDate &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.forecast == this.forecast);
 }
 
 class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
@@ -1417,6 +1455,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
   final Value<int?> ageDays;
   final Value<String?> lastRecordDate;
   final Value<String> status;
+  final Value<String?> forecast;
   const CachedFlocksCompanion({
     this.id = const Value.absent(),
     this.organisationId = const Value.absent(),
@@ -1431,6 +1470,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
     this.ageDays = const Value.absent(),
     this.lastRecordDate = const Value.absent(),
     this.status = const Value.absent(),
+    this.forecast = const Value.absent(),
   });
   CachedFlocksCompanion.insert({
     this.id = const Value.absent(),
@@ -1446,6 +1486,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
     this.ageDays = const Value.absent(),
     this.lastRecordDate = const Value.absent(),
     required String status,
+    this.forecast = const Value.absent(),
   }) : organisationId = Value(organisationId),
        code = Value(code),
        kind = Value(kind),
@@ -1464,6 +1505,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
     Expression<int>? ageDays,
     Expression<String>? lastRecordDate,
     Expression<String>? status,
+    Expression<String>? forecast,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1479,6 +1521,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
       if (ageDays != null) 'age_days': ageDays,
       if (lastRecordDate != null) 'last_record_date': lastRecordDate,
       if (status != null) 'status': status,
+      if (forecast != null) 'forecast': forecast,
     });
   }
 
@@ -1496,6 +1539,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
     Value<int?>? ageDays,
     Value<String?>? lastRecordDate,
     Value<String>? status,
+    Value<String?>? forecast,
   }) {
     return CachedFlocksCompanion(
       id: id ?? this.id,
@@ -1511,6 +1555,7 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
       ageDays: ageDays ?? this.ageDays,
       lastRecordDate: lastRecordDate ?? this.lastRecordDate,
       status: status ?? this.status,
+      forecast: forecast ?? this.forecast,
     );
   }
 
@@ -1556,6 +1601,9 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (forecast.present) {
+      map['forecast'] = Variable<String>(forecast.value);
+    }
     return map;
   }
 
@@ -1574,7 +1622,8 @@ class CachedFlocksCompanion extends UpdateCompanion<CachedFlock> {
           ..write('quantityCurrent: $quantityCurrent, ')
           ..write('ageDays: $ageDays, ')
           ..write('lastRecordDate: $lastRecordDate, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('forecast: $forecast')
           ..write(')'))
         .toString();
   }
@@ -6530,6 +6579,7 @@ typedef $$CachedFlocksTableCreateCompanionBuilder =
       Value<int?> ageDays,
       Value<String?> lastRecordDate,
       required String status,
+      Value<String?> forecast,
     });
 typedef $$CachedFlocksTableUpdateCompanionBuilder =
     CachedFlocksCompanion Function({
@@ -6546,6 +6596,7 @@ typedef $$CachedFlocksTableUpdateCompanionBuilder =
       Value<int?> ageDays,
       Value<String?> lastRecordDate,
       Value<String> status,
+      Value<String?> forecast,
     });
 
 class $$CachedFlocksTableFilterComposer
@@ -6619,6 +6670,11 @@ class $$CachedFlocksTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get forecast => $composableBuilder(
+    column: $table.forecast,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -6696,6 +6752,11 @@ class $$CachedFlocksTableOrderingComposer
     column: $table.status,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get forecast => $composableBuilder(
+    column: $table.forecast,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CachedFlocksTableAnnotationComposer
@@ -6755,6 +6816,9 @@ class $$CachedFlocksTableAnnotationComposer
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get forecast =>
+      $composableBuilder(column: $table.forecast, builder: (column) => column);
 }
 
 class $$CachedFlocksTableTableManager
@@ -6801,6 +6865,7 @@ class $$CachedFlocksTableTableManager
                 Value<int?> ageDays = const Value.absent(),
                 Value<String?> lastRecordDate = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<String?> forecast = const Value.absent(),
               }) => CachedFlocksCompanion(
                 id: id,
                 organisationId: organisationId,
@@ -6815,6 +6880,7 @@ class $$CachedFlocksTableTableManager
                 ageDays: ageDays,
                 lastRecordDate: lastRecordDate,
                 status: status,
+                forecast: forecast,
               ),
           createCompanionCallback:
               ({
@@ -6831,6 +6897,7 @@ class $$CachedFlocksTableTableManager
                 Value<int?> ageDays = const Value.absent(),
                 Value<String?> lastRecordDate = const Value.absent(),
                 required String status,
+                Value<String?> forecast = const Value.absent(),
               }) => CachedFlocksCompanion.insert(
                 id: id,
                 organisationId: organisationId,
@@ -6845,6 +6912,7 @@ class $$CachedFlocksTableTableManager
                 ageDays: ageDays,
                 lastRecordDate: lastRecordDate,
                 status: status,
+                forecast: forecast,
               ),
           withReferenceMapper: (p0) => p0
               .map(
