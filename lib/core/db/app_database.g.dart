@@ -5158,6 +5158,16 @@ class $CachedDailyRecordsTable extends CachedDailyRecords
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _theftsMeta = const VerificationMeta('thefts');
+  @override
+  late final GeneratedColumn<int> thefts = GeneratedColumn<int>(
+    'thefts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _eggsCollectedMeta = const VerificationMeta(
     'eggsCollected',
   );
@@ -5250,6 +5260,7 @@ class $CachedDailyRecordsTable extends CachedDailyRecords
     clientUuid,
     mortality,
     culls,
+    thefts,
     eggsCollected,
     eggsBroken,
     feedKg,
@@ -5328,6 +5339,12 @@ class $CachedDailyRecordsTable extends CachedDailyRecords
       context.handle(
         _cullsMeta,
         culls.isAcceptableOrUnknown(data['culls']!, _cullsMeta),
+      );
+    }
+    if (data.containsKey('thefts')) {
+      context.handle(
+        _theftsMeta,
+        thefts.isAcceptableOrUnknown(data['thefts']!, _theftsMeta),
       );
     }
     if (data.containsKey('eggs_collected')) {
@@ -5430,6 +5447,10 @@ class $CachedDailyRecordsTable extends CachedDailyRecords
         DriftSqlType.int,
         data['${effectivePrefix}culls'],
       )!,
+      thefts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}thefts'],
+      )!,
       eggsCollected: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}eggs_collected'],
@@ -5481,6 +5502,7 @@ class CachedDailyRecord extends DataClass
   final String? clientUuid;
   final int mortality;
   final int culls;
+  final int thefts;
   final int? eggsCollected;
   final int? eggsBroken;
   final double? feedKg;
@@ -5498,6 +5520,7 @@ class CachedDailyRecord extends DataClass
     this.clientUuid,
     required this.mortality,
     required this.culls,
+    required this.thefts,
     this.eggsCollected,
     this.eggsBroken,
     this.feedKg,
@@ -5522,6 +5545,7 @@ class CachedDailyRecord extends DataClass
     }
     map['mortality'] = Variable<int>(mortality);
     map['culls'] = Variable<int>(culls);
+    map['thefts'] = Variable<int>(thefts);
     if (!nullToAbsent || eggsCollected != null) {
       map['eggs_collected'] = Variable<int>(eggsCollected);
     }
@@ -5561,6 +5585,7 @@ class CachedDailyRecord extends DataClass
           : Value(clientUuid),
       mortality: Value(mortality),
       culls: Value(culls),
+      thefts: Value(thefts),
       eggsCollected: eggsCollected == null && nullToAbsent
           ? const Value.absent()
           : Value(eggsCollected),
@@ -5600,6 +5625,7 @@ class CachedDailyRecord extends DataClass
       clientUuid: serializer.fromJson<String?>(json['clientUuid']),
       mortality: serializer.fromJson<int>(json['mortality']),
       culls: serializer.fromJson<int>(json['culls']),
+      thefts: serializer.fromJson<int>(json['thefts']),
       eggsCollected: serializer.fromJson<int?>(json['eggsCollected']),
       eggsBroken: serializer.fromJson<int?>(json['eggsBroken']),
       feedKg: serializer.fromJson<double?>(json['feedKg']),
@@ -5622,6 +5648,7 @@ class CachedDailyRecord extends DataClass
       'clientUuid': serializer.toJson<String?>(clientUuid),
       'mortality': serializer.toJson<int>(mortality),
       'culls': serializer.toJson<int>(culls),
+      'thefts': serializer.toJson<int>(thefts),
       'eggsCollected': serializer.toJson<int?>(eggsCollected),
       'eggsBroken': serializer.toJson<int?>(eggsBroken),
       'feedKg': serializer.toJson<double?>(feedKg),
@@ -5642,6 +5669,7 @@ class CachedDailyRecord extends DataClass
     Value<String?> clientUuid = const Value.absent(),
     int? mortality,
     int? culls,
+    int? thefts,
     Value<int?> eggsCollected = const Value.absent(),
     Value<int?> eggsBroken = const Value.absent(),
     Value<double?> feedKg = const Value.absent(),
@@ -5659,6 +5687,7 @@ class CachedDailyRecord extends DataClass
     clientUuid: clientUuid.present ? clientUuid.value : this.clientUuid,
     mortality: mortality ?? this.mortality,
     culls: culls ?? this.culls,
+    thefts: thefts ?? this.thefts,
     eggsCollected: eggsCollected.present
         ? eggsCollected.value
         : this.eggsCollected,
@@ -5688,6 +5717,7 @@ class CachedDailyRecord extends DataClass
           : this.clientUuid,
       mortality: data.mortality.present ? data.mortality.value : this.mortality,
       culls: data.culls.present ? data.culls.value : this.culls,
+      thefts: data.thefts.present ? data.thefts.value : this.thefts,
       eggsCollected: data.eggsCollected.present
           ? data.eggsCollected.value
           : this.eggsCollected,
@@ -5718,6 +5748,7 @@ class CachedDailyRecord extends DataClass
           ..write('clientUuid: $clientUuid, ')
           ..write('mortality: $mortality, ')
           ..write('culls: $culls, ')
+          ..write('thefts: $thefts, ')
           ..write('eggsCollected: $eggsCollected, ')
           ..write('eggsBroken: $eggsBroken, ')
           ..write('feedKg: $feedKg, ')
@@ -5740,6 +5771,7 @@ class CachedDailyRecord extends DataClass
     clientUuid,
     mortality,
     culls,
+    thefts,
     eggsCollected,
     eggsBroken,
     feedKg,
@@ -5761,6 +5793,7 @@ class CachedDailyRecord extends DataClass
           other.clientUuid == this.clientUuid &&
           other.mortality == this.mortality &&
           other.culls == this.culls &&
+          other.thefts == this.thefts &&
           other.eggsCollected == this.eggsCollected &&
           other.eggsBroken == this.eggsBroken &&
           other.feedKg == this.feedKg &&
@@ -5780,6 +5813,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
   final Value<String?> clientUuid;
   final Value<int> mortality;
   final Value<int> culls;
+  final Value<int> thefts;
   final Value<int?> eggsCollected;
   final Value<int?> eggsBroken;
   final Value<double?> feedKg;
@@ -5798,6 +5832,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
     this.clientUuid = const Value.absent(),
     this.mortality = const Value.absent(),
     this.culls = const Value.absent(),
+    this.thefts = const Value.absent(),
     this.eggsCollected = const Value.absent(),
     this.eggsBroken = const Value.absent(),
     this.feedKg = const Value.absent(),
@@ -5817,6 +5852,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
     this.clientUuid = const Value.absent(),
     this.mortality = const Value.absent(),
     this.culls = const Value.absent(),
+    this.thefts = const Value.absent(),
     this.eggsCollected = const Value.absent(),
     this.eggsBroken = const Value.absent(),
     this.feedKg = const Value.absent(),
@@ -5840,6 +5876,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
     Expression<String>? clientUuid,
     Expression<int>? mortality,
     Expression<int>? culls,
+    Expression<int>? thefts,
     Expression<int>? eggsCollected,
     Expression<int>? eggsBroken,
     Expression<double>? feedKg,
@@ -5859,6 +5896,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
       if (clientUuid != null) 'client_uuid': clientUuid,
       if (mortality != null) 'mortality': mortality,
       if (culls != null) 'culls': culls,
+      if (thefts != null) 'thefts': thefts,
       if (eggsCollected != null) 'eggs_collected': eggsCollected,
       if (eggsBroken != null) 'eggs_broken': eggsBroken,
       if (feedKg != null) 'feed_kg': feedKg,
@@ -5880,6 +5918,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
     Value<String?>? clientUuid,
     Value<int>? mortality,
     Value<int>? culls,
+    Value<int>? thefts,
     Value<int?>? eggsCollected,
     Value<int?>? eggsBroken,
     Value<double?>? feedKg,
@@ -5899,6 +5938,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
       clientUuid: clientUuid ?? this.clientUuid,
       mortality: mortality ?? this.mortality,
       culls: culls ?? this.culls,
+      thefts: thefts ?? this.thefts,
       eggsCollected: eggsCollected ?? this.eggsCollected,
       eggsBroken: eggsBroken ?? this.eggsBroken,
       feedKg: feedKg ?? this.feedKg,
@@ -5937,6 +5977,9 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
     }
     if (culls.present) {
       map['culls'] = Variable<int>(culls.value);
+    }
+    if (thefts.present) {
+      map['thefts'] = Variable<int>(thefts.value);
     }
     if (eggsCollected.present) {
       map['eggs_collected'] = Variable<int>(eggsCollected.value);
@@ -5979,6 +6022,7 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
           ..write('clientUuid: $clientUuid, ')
           ..write('mortality: $mortality, ')
           ..write('culls: $culls, ')
+          ..write('thefts: $thefts, ')
           ..write('eggsCollected: $eggsCollected, ')
           ..write('eggsBroken: $eggsBroken, ')
           ..write('feedKg: $feedKg, ')
@@ -8664,6 +8708,7 @@ typedef $$CachedDailyRecordsTableCreateCompanionBuilder =
       Value<String?> clientUuid,
       Value<int> mortality,
       Value<int> culls,
+      Value<int> thefts,
       Value<int?> eggsCollected,
       Value<int?> eggsBroken,
       Value<double?> feedKg,
@@ -8684,6 +8729,7 @@ typedef $$CachedDailyRecordsTableUpdateCompanionBuilder =
       Value<String?> clientUuid,
       Value<int> mortality,
       Value<int> culls,
+      Value<int> thefts,
       Value<int?> eggsCollected,
       Value<int?> eggsBroken,
       Value<double?> feedKg,
@@ -8741,6 +8787,11 @@ class $$CachedDailyRecordsTableFilterComposer
 
   ColumnFilters<int> get culls => $composableBuilder(
     column: $table.culls,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get thefts => $composableBuilder(
+    column: $table.thefts,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8834,6 +8885,11 @@ class $$CachedDailyRecordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get thefts => $composableBuilder(
+    column: $table.thefts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get eggsCollected => $composableBuilder(
     column: $table.eggsCollected,
     builder: (column) => ColumnOrderings(column),
@@ -8913,6 +8969,9 @@ class $$CachedDailyRecordsTableAnnotationComposer
 
   GeneratedColumn<int> get culls =>
       $composableBuilder(column: $table.culls, builder: (column) => column);
+
+  GeneratedColumn<int> get thefts =>
+      $composableBuilder(column: $table.thefts, builder: (column) => column);
 
   GeneratedColumn<int> get eggsCollected => $composableBuilder(
     column: $table.eggsCollected,
@@ -8995,6 +9054,7 @@ class $$CachedDailyRecordsTableTableManager
                 Value<String?> clientUuid = const Value.absent(),
                 Value<int> mortality = const Value.absent(),
                 Value<int> culls = const Value.absent(),
+                Value<int> thefts = const Value.absent(),
                 Value<int?> eggsCollected = const Value.absent(),
                 Value<int?> eggsBroken = const Value.absent(),
                 Value<double?> feedKg = const Value.absent(),
@@ -9013,6 +9073,7 @@ class $$CachedDailyRecordsTableTableManager
                 clientUuid: clientUuid,
                 mortality: mortality,
                 culls: culls,
+                thefts: thefts,
                 eggsCollected: eggsCollected,
                 eggsBroken: eggsBroken,
                 feedKg: feedKg,
@@ -9033,6 +9094,7 @@ class $$CachedDailyRecordsTableTableManager
                 Value<String?> clientUuid = const Value.absent(),
                 Value<int> mortality = const Value.absent(),
                 Value<int> culls = const Value.absent(),
+                Value<int> thefts = const Value.absent(),
                 Value<int?> eggsCollected = const Value.absent(),
                 Value<int?> eggsBroken = const Value.absent(),
                 Value<double?> feedKg = const Value.absent(),
@@ -9051,6 +9113,7 @@ class $$CachedDailyRecordsTableTableManager
                 clientUuid: clientUuid,
                 mortality: mortality,
                 culls: culls,
+                thefts: thefts,
                 eggsCollected: eggsCollected,
                 eggsBroken: eggsBroken,
                 feedKg: feedKg,

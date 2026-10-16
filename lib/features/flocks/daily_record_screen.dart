@@ -24,6 +24,7 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _mortality = TextEditingController(text: '0');
   final _culls = TextEditingController(text: '0');
+  final _thefts = TextEditingController(text: '0');
   final _eggs = TextEditingController();
   final _eggsBroken = TextEditingController();
   final _feed = TextEditingController();
@@ -56,6 +57,7 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
       _existing = existing;
       _mortality.text = (existing?.mortality ?? 0).toString();
       _culls.text = (existing?.culls ?? 0).toString();
+      _thefts.text = (existing?.thefts ?? 0).toString();
       _eggs.text = existing?.eggsCollected?.toString() ?? '';
       _eggsBroken.text = existing?.eggsBroken?.toString() ?? '';
       _feed.text = existing?.feedKg == null
@@ -77,6 +79,7 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
     for (final controller in [
       _mortality,
       _culls,
+      _thefts,
       _eggs,
       _eggsBroken,
       _feed,
@@ -102,6 +105,7 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
       'record_date': _isoDate(_date),
       'mortality': asInt(_mortality) ?? 0,
       'culls': asInt(_culls) ?? 0,
+      'thefts': asInt(_thefts) ?? 0,
       'eggs_collected': widget.flock.tracksEggs ? asInt(_eggs) : null,
       'eggs_broken': widget.flock.tracksEggs ? asInt(_eggsBroken) : null,
       'feed_consumed_kg': asNum(_feed),
@@ -132,9 +136,14 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
 
     final membership = session.membership!;
     final payload = buildPayload();
-    final losses = (payload['mortality'] as int) + (payload['culls'] as int);
+    final losses =
+        (payload['mortality'] as int) +
+        (payload['culls'] as int) +
+        (payload['thefts'] as int);
     final previousLosses =
-        (_existing?.mortality ?? 0) + (_existing?.culls ?? 0);
+        (_existing?.mortality ?? 0) +
+        (_existing?.culls ?? 0) +
+        (_existing?.thefts ?? 0);
     final lossesDelta = losses - previousLosses;
 
     if (lossesDelta > widget.flock.quantityCurrent) {
@@ -289,6 +298,12 @@ class _DailyRecordScreenState extends ConsumerState<DailyRecordScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              _IntField(
+                controller: _thefts,
+                label: 'Disparitions / vol',
+                helperText: 'Sujets volés ou disparus : retirés de l’effectif, hors mortalité ; les responsables sont alertés.',
+              ),
               if (flock.tracksEggs) ...[
                 const SizedBox(height: 12),
                 Row(
@@ -384,11 +399,13 @@ class _IntField extends StatelessWidget {
     required this.controller,
     required this.label,
     this.required = false,
+    this.helperText,
   });
 
   final TextEditingController controller;
   final String label;
   final bool required;
+  final String? helperText;
 
   @override
   Widget build(BuildContext context) {
@@ -396,7 +413,11 @@ class _IntField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(
+        labelText: label,
+        helperText: helperText,
+        helperMaxLines: 3,
+      ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return required ? 'Obligatoire' : null;

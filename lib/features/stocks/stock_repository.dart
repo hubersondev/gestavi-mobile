@@ -189,6 +189,7 @@ double sellableQuantity(CachedProduct product, CachedStock stock) {
 const stockOutReasons = <String, String>{
   'consumption': 'Consommation',
   'loss': 'Perte / Casse',
+  'theft': 'Vol',
   'sale': 'Vente',
   'transfer_out': 'Transfert sortant',
   'adjustment': 'Ajustement',

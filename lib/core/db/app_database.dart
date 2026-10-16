@@ -172,6 +172,7 @@ class CachedDailyRecords extends Table {
       text().nullable()(); // saisie locale en attente d'envoi
   IntColumn get mortality => integer().withDefault(const Constant(0))();
   IntColumn get culls => integer().withDefault(const Constant(0))();
+  IntColumn get thefts => integer().withDefault(const Constant(0))();
   IntColumn get eggsCollected => integer().nullable()();
   IntColumn get eggsBroken => integer().nullable()();
   RealColumn get feedKg => real().nullable()();
@@ -203,7 +204,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -226,6 +227,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 6) {
         await m.createTable(cachedDailyRecords);
+      }
+      if (from < 7) {
+        await m.addColumn(cachedDailyRecords, cachedDailyRecords.thefts);
       }
     },
   );
