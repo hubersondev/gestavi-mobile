@@ -4,13 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/theme.dart';
 import '../../core/db/app_database.dart';
 import '../auth/auth_controller.dart';
+import '../auth/auth_repository.dart';
 import '../flocks/flock_repository.dart' show networkMessage;
 import '../stocks/stock_repository.dart';
 import '../vaccinations/vaccination_repository.dart';
 import 'notification_repository.dart';
+import 'weather_repository.dart';
 
-/// Alertes : stocks sous le seuil (calculés depuis le cache, donc à jour même sans réseau)
-/// puis les notifications du serveur, non lues en évidence.
+/// Alertes : météo des prochains jours et conditions à risque pour les bandes, stocks sous le
+/// seuil (calculés depuis le cache, donc à jour même sans réseau), vaccinations en retard, puis
+/// les notifications du serveur, non lues en évidence.
 class AlertsScreen extends ConsumerStatefulWidget {
   const AlertsScreen({super.key});
 
@@ -40,6 +43,7 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
               organisationId: session.membership!.organisationId,
               organisationSlug: session.membership!.slug,
             );
+        await _refreshWeather(session);
       }
     } catch (error) {
       if (!silent && mounted) {
@@ -49,6 +53,24 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
       if (mounted) {
         setState(() => _refreshedOnce = true);
       }
+    }
+  }
+
+  /// Météo de la ferme de travail, ou de toutes les fermes accessibles.
+  Future<void> _refreshWeather(Authenticated session) async {
+    final membership = session.membership!;
+    final farms = await ref.read(authRepositoryProvider).farms(membership);
+    final targets = session.farmId == null
+        ? farms
+        : farms.where((f) => f.id == session.farmId);
+    final weather = ref.read(weatherRepositoryProvider);
+
+    for (final farm in targets) {
+      await weather.refresh(
+        organisationSlug: membership.slug,
+        farmId: farm.id,
+        farmName: farm.name,
+      );
     }
   }
 
@@ -121,12 +143,36 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
         const <CachedVaccination>[];
     final notifications = ref.watch(notificationsProvider).value ?? const [];
     final unread = notifications.where((n) => n.readAt == null).length;
+    final weatherDays =
+        ref.watch(weatherProvider(session.farmId)).value ??
+        const <CachedWeatherData>[];
+    final weatherAlerts =
+        ref.watch(weatherAlertsProvider(session.farmId)).value ??
+        const <CachedWeatherAlert>[];
+    final weatherByFarm = <int, List<CachedWeatherData>>{};
+
+    for (final day in weatherDays) {
+      weatherByFarm.putIfAbsent(day.farmId, () => []).add(day);
+    }
 
     return RefreshIndicator(
       onRefresh: _refresh,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (weatherByFarm.isNotEmpty) ...[
+            Text('Météo', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            for (final entry in weatherByFarm.entries)
+              _WeatherCard(
+                days: entry.value,
+                showFarmName: weatherByFarm.length > 1,
+                alerts: weatherAlerts
+                    .where((a) => a.farmId == entry.key)
+                    .toList(),
+              ),
+            const SizedBox(height: 16),
+          ],
           if (lowStocks.isNotEmpty) ...[
             Text('Stocks sous le seuil', style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),
@@ -203,6 +249,97 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                 onTap: () => _markAsRead(notification),
               ),
         ],
+      ),
+    );
+  }
+}
+
+/// Prévisions à 3 jours d'une ferme et conditions à risque pour ses bandes.
+class _WeatherCard extends StatelessWidget {
+  const _WeatherCard({
+    required this.days,
+    required this.alerts,
+    required this.showFarmName,
+  });
+
+  final List<CachedWeatherData> days;
+  final List<CachedWeatherAlert> alerts;
+  final bool showFarmName;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final farmName = days.first.farmName;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (showFarmName && farmName != null) ...[
+              Text(farmName, style: theme.textTheme.titleSmall),
+              const SizedBox(height: 8),
+            ],
+            Row(
+              children: [
+                for (final day in days.take(WeatherRepository.horizonDays))
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          weatherDayLabel(day.forecastDate),
+                          style: theme.textTheme.labelMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          day.emoji ?? '🌤️',
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                        Text(
+                          weatherRange(day),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          weatherDetails(day),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            for (final alert in alerts) ...[
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    alert.isCritical
+                        ? Icons.warning_amber_rounded
+                        : Icons.info_outline,
+                    size: 18,
+                    color: alert.isCritical
+                        ? GestaviTheme.danger
+                        : GestaviTheme.warning,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '${alert.flockCode ?? 'Bande ${alert.flockId}'} — ${alert.message}',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -188,6 +188,43 @@ class CachedDailyRecords extends Table {
   Set<Column> get primaryKey => {key};
 }
 
+/// Prévisions météo par ferme et par jour (3 à 5 jours), telles que servies par l'API ; lisibles
+/// sans réseau sur l'onglet Alertes.
+class CachedWeather extends Table {
+  TextColumn get key => text()(); // '<farmId>_<AAAA-MM-JJ>'
+  IntColumn get farmId => integer()();
+  TextColumn get farmName => text().nullable()();
+  TextColumn get forecastDate => text()();
+  RealColumn get tempMin => real().nullable()();
+  RealColumn get tempMax => real().nullable()();
+  RealColumn get tempAvg => real().nullable()();
+  RealColumn get humidity => real().nullable()();
+  RealColumn get windKmh => real().nullable()();
+  RealColumn get rainMm => real().nullable()();
+  TextColumn get description => text().nullable()();
+  TextColumn get emoji => text().nullable()();
+  DateTimeColumn get fetchedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+/// Conditions météo à risque pour les bandes (canicule, froid, humidité, vent, pluie), calculées
+/// par le serveur d'après les seuils de la phase de production.
+class CachedWeatherAlerts extends Table {
+  TextColumn get key => text()(); // '<farmId>_<flockId>_<date>_<kind>'
+  IntColumn get farmId => integer()();
+  IntColumn get flockId => integer()();
+  TextColumn get flockCode => text().nullable()();
+  TextColumn get forecastDate => text()();
+  TextColumn get kind => text()(); // heat, cold, humidity, wind, rain
+  BoolColumn get isCritical => boolean().withDefault(const Constant(false))();
+  TextColumn get message => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
 @DriftDatabase(
   tables: [
     SyncQueue,
@@ -200,13 +237,15 @@ class CachedDailyRecords extends Table {
     CachedNotifications,
     CachedVaccinations,
     CachedDailyRecords,
+    CachedWeather,
+    CachedWeatherAlerts,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -235,6 +274,10 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 8) {
         await m.addColumn(cachedFlocks, cachedFlocks.forecast);
+      }
+      if (from < 9) {
+        await m.createTable(cachedWeather);
+        await m.createTable(cachedWeatherAlerts);
       }
     },
   );

@@ -6086,6 +6086,1297 @@ class CachedDailyRecordsCompanion extends UpdateCompanion<CachedDailyRecord> {
   }
 }
 
+class $CachedWeatherTable extends CachedWeather
+    with TableInfo<$CachedWeatherTable, CachedWeatherData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedWeatherTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<int> farmId = GeneratedColumn<int>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmNameMeta = const VerificationMeta(
+    'farmName',
+  );
+  @override
+  late final GeneratedColumn<String> farmName = GeneratedColumn<String>(
+    'farm_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _forecastDateMeta = const VerificationMeta(
+    'forecastDate',
+  );
+  @override
+  late final GeneratedColumn<String> forecastDate = GeneratedColumn<String>(
+    'forecast_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tempMinMeta = const VerificationMeta(
+    'tempMin',
+  );
+  @override
+  late final GeneratedColumn<double> tempMin = GeneratedColumn<double>(
+    'temp_min',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tempMaxMeta = const VerificationMeta(
+    'tempMax',
+  );
+  @override
+  late final GeneratedColumn<double> tempMax = GeneratedColumn<double>(
+    'temp_max',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _tempAvgMeta = const VerificationMeta(
+    'tempAvg',
+  );
+  @override
+  late final GeneratedColumn<double> tempAvg = GeneratedColumn<double>(
+    'temp_avg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _humidityMeta = const VerificationMeta(
+    'humidity',
+  );
+  @override
+  late final GeneratedColumn<double> humidity = GeneratedColumn<double>(
+    'humidity',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _windKmhMeta = const VerificationMeta(
+    'windKmh',
+  );
+  @override
+  late final GeneratedColumn<double> windKmh = GeneratedColumn<double>(
+    'wind_kmh',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rainMmMeta = const VerificationMeta('rainMm');
+  @override
+  late final GeneratedColumn<double> rainMm = GeneratedColumn<double>(
+    'rain_mm',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emojiMeta = const VerificationMeta('emoji');
+  @override
+  late final GeneratedColumn<String> emoji = GeneratedColumn<String>(
+    'emoji',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fetchedAtMeta = const VerificationMeta(
+    'fetchedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> fetchedAt = GeneratedColumn<DateTime>(
+    'fetched_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    key,
+    farmId,
+    farmName,
+    forecastDate,
+    tempMin,
+    tempMax,
+    tempAvg,
+    humidity,
+    windKmh,
+    rainMm,
+    description,
+    emoji,
+    fetchedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_weather';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedWeatherData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('farm_name')) {
+      context.handle(
+        _farmNameMeta,
+        farmName.isAcceptableOrUnknown(data['farm_name']!, _farmNameMeta),
+      );
+    }
+    if (data.containsKey('forecast_date')) {
+      context.handle(
+        _forecastDateMeta,
+        forecastDate.isAcceptableOrUnknown(
+          data['forecast_date']!,
+          _forecastDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_forecastDateMeta);
+    }
+    if (data.containsKey('temp_min')) {
+      context.handle(
+        _tempMinMeta,
+        tempMin.isAcceptableOrUnknown(data['temp_min']!, _tempMinMeta),
+      );
+    }
+    if (data.containsKey('temp_max')) {
+      context.handle(
+        _tempMaxMeta,
+        tempMax.isAcceptableOrUnknown(data['temp_max']!, _tempMaxMeta),
+      );
+    }
+    if (data.containsKey('temp_avg')) {
+      context.handle(
+        _tempAvgMeta,
+        tempAvg.isAcceptableOrUnknown(data['temp_avg']!, _tempAvgMeta),
+      );
+    }
+    if (data.containsKey('humidity')) {
+      context.handle(
+        _humidityMeta,
+        humidity.isAcceptableOrUnknown(data['humidity']!, _humidityMeta),
+      );
+    }
+    if (data.containsKey('wind_kmh')) {
+      context.handle(
+        _windKmhMeta,
+        windKmh.isAcceptableOrUnknown(data['wind_kmh']!, _windKmhMeta),
+      );
+    }
+    if (data.containsKey('rain_mm')) {
+      context.handle(
+        _rainMmMeta,
+        rainMm.isAcceptableOrUnknown(data['rain_mm']!, _rainMmMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('emoji')) {
+      context.handle(
+        _emojiMeta,
+        emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta),
+      );
+    }
+    if (data.containsKey('fetched_at')) {
+      context.handle(
+        _fetchedAtMeta,
+        fetchedAt.isAcceptableOrUnknown(data['fetched_at']!, _fetchedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CachedWeatherData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedWeatherData(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      farmName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_name'],
+      ),
+      forecastDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}forecast_date'],
+      )!,
+      tempMin: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}temp_min'],
+      ),
+      tempMax: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}temp_max'],
+      ),
+      tempAvg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}temp_avg'],
+      ),
+      humidity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}humidity'],
+      ),
+      windKmh: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}wind_kmh'],
+      ),
+      rainMm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rain_mm'],
+      ),
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      emoji: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}emoji'],
+      ),
+      fetchedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fetched_at'],
+      ),
+    );
+  }
+
+  @override
+  $CachedWeatherTable createAlias(String alias) {
+    return $CachedWeatherTable(attachedDatabase, alias);
+  }
+}
+
+class CachedWeatherData extends DataClass
+    implements Insertable<CachedWeatherData> {
+  final String key;
+  final int farmId;
+  final String? farmName;
+  final String forecastDate;
+  final double? tempMin;
+  final double? tempMax;
+  final double? tempAvg;
+  final double? humidity;
+  final double? windKmh;
+  final double? rainMm;
+  final String? description;
+  final String? emoji;
+  final DateTime? fetchedAt;
+  const CachedWeatherData({
+    required this.key,
+    required this.farmId,
+    this.farmName,
+    required this.forecastDate,
+    this.tempMin,
+    this.tempMax,
+    this.tempAvg,
+    this.humidity,
+    this.windKmh,
+    this.rainMm,
+    this.description,
+    this.emoji,
+    this.fetchedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['farm_id'] = Variable<int>(farmId);
+    if (!nullToAbsent || farmName != null) {
+      map['farm_name'] = Variable<String>(farmName);
+    }
+    map['forecast_date'] = Variable<String>(forecastDate);
+    if (!nullToAbsent || tempMin != null) {
+      map['temp_min'] = Variable<double>(tempMin);
+    }
+    if (!nullToAbsent || tempMax != null) {
+      map['temp_max'] = Variable<double>(tempMax);
+    }
+    if (!nullToAbsent || tempAvg != null) {
+      map['temp_avg'] = Variable<double>(tempAvg);
+    }
+    if (!nullToAbsent || humidity != null) {
+      map['humidity'] = Variable<double>(humidity);
+    }
+    if (!nullToAbsent || windKmh != null) {
+      map['wind_kmh'] = Variable<double>(windKmh);
+    }
+    if (!nullToAbsent || rainMm != null) {
+      map['rain_mm'] = Variable<double>(rainMm);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || emoji != null) {
+      map['emoji'] = Variable<String>(emoji);
+    }
+    if (!nullToAbsent || fetchedAt != null) {
+      map['fetched_at'] = Variable<DateTime>(fetchedAt);
+    }
+    return map;
+  }
+
+  CachedWeatherCompanion toCompanion(bool nullToAbsent) {
+    return CachedWeatherCompanion(
+      key: Value(key),
+      farmId: Value(farmId),
+      farmName: farmName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(farmName),
+      forecastDate: Value(forecastDate),
+      tempMin: tempMin == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tempMin),
+      tempMax: tempMax == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tempMax),
+      tempAvg: tempAvg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tempAvg),
+      humidity: humidity == null && nullToAbsent
+          ? const Value.absent()
+          : Value(humidity),
+      windKmh: windKmh == null && nullToAbsent
+          ? const Value.absent()
+          : Value(windKmh),
+      rainMm: rainMm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rainMm),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      emoji: emoji == null && nullToAbsent
+          ? const Value.absent()
+          : Value(emoji),
+      fetchedAt: fetchedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fetchedAt),
+    );
+  }
+
+  factory CachedWeatherData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedWeatherData(
+      key: serializer.fromJson<String>(json['key']),
+      farmId: serializer.fromJson<int>(json['farmId']),
+      farmName: serializer.fromJson<String?>(json['farmName']),
+      forecastDate: serializer.fromJson<String>(json['forecastDate']),
+      tempMin: serializer.fromJson<double?>(json['tempMin']),
+      tempMax: serializer.fromJson<double?>(json['tempMax']),
+      tempAvg: serializer.fromJson<double?>(json['tempAvg']),
+      humidity: serializer.fromJson<double?>(json['humidity']),
+      windKmh: serializer.fromJson<double?>(json['windKmh']),
+      rainMm: serializer.fromJson<double?>(json['rainMm']),
+      description: serializer.fromJson<String?>(json['description']),
+      emoji: serializer.fromJson<String?>(json['emoji']),
+      fetchedAt: serializer.fromJson<DateTime?>(json['fetchedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'farmId': serializer.toJson<int>(farmId),
+      'farmName': serializer.toJson<String?>(farmName),
+      'forecastDate': serializer.toJson<String>(forecastDate),
+      'tempMin': serializer.toJson<double?>(tempMin),
+      'tempMax': serializer.toJson<double?>(tempMax),
+      'tempAvg': serializer.toJson<double?>(tempAvg),
+      'humidity': serializer.toJson<double?>(humidity),
+      'windKmh': serializer.toJson<double?>(windKmh),
+      'rainMm': serializer.toJson<double?>(rainMm),
+      'description': serializer.toJson<String?>(description),
+      'emoji': serializer.toJson<String?>(emoji),
+      'fetchedAt': serializer.toJson<DateTime?>(fetchedAt),
+    };
+  }
+
+  CachedWeatherData copyWith({
+    String? key,
+    int? farmId,
+    Value<String?> farmName = const Value.absent(),
+    String? forecastDate,
+    Value<double?> tempMin = const Value.absent(),
+    Value<double?> tempMax = const Value.absent(),
+    Value<double?> tempAvg = const Value.absent(),
+    Value<double?> humidity = const Value.absent(),
+    Value<double?> windKmh = const Value.absent(),
+    Value<double?> rainMm = const Value.absent(),
+    Value<String?> description = const Value.absent(),
+    Value<String?> emoji = const Value.absent(),
+    Value<DateTime?> fetchedAt = const Value.absent(),
+  }) => CachedWeatherData(
+    key: key ?? this.key,
+    farmId: farmId ?? this.farmId,
+    farmName: farmName.present ? farmName.value : this.farmName,
+    forecastDate: forecastDate ?? this.forecastDate,
+    tempMin: tempMin.present ? tempMin.value : this.tempMin,
+    tempMax: tempMax.present ? tempMax.value : this.tempMax,
+    tempAvg: tempAvg.present ? tempAvg.value : this.tempAvg,
+    humidity: humidity.present ? humidity.value : this.humidity,
+    windKmh: windKmh.present ? windKmh.value : this.windKmh,
+    rainMm: rainMm.present ? rainMm.value : this.rainMm,
+    description: description.present ? description.value : this.description,
+    emoji: emoji.present ? emoji.value : this.emoji,
+    fetchedAt: fetchedAt.present ? fetchedAt.value : this.fetchedAt,
+  );
+  CachedWeatherData copyWithCompanion(CachedWeatherCompanion data) {
+    return CachedWeatherData(
+      key: data.key.present ? data.key.value : this.key,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      farmName: data.farmName.present ? data.farmName.value : this.farmName,
+      forecastDate: data.forecastDate.present
+          ? data.forecastDate.value
+          : this.forecastDate,
+      tempMin: data.tempMin.present ? data.tempMin.value : this.tempMin,
+      tempMax: data.tempMax.present ? data.tempMax.value : this.tempMax,
+      tempAvg: data.tempAvg.present ? data.tempAvg.value : this.tempAvg,
+      humidity: data.humidity.present ? data.humidity.value : this.humidity,
+      windKmh: data.windKmh.present ? data.windKmh.value : this.windKmh,
+      rainMm: data.rainMm.present ? data.rainMm.value : this.rainMm,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      emoji: data.emoji.present ? data.emoji.value : this.emoji,
+      fetchedAt: data.fetchedAt.present ? data.fetchedAt.value : this.fetchedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedWeatherData(')
+          ..write('key: $key, ')
+          ..write('farmId: $farmId, ')
+          ..write('farmName: $farmName, ')
+          ..write('forecastDate: $forecastDate, ')
+          ..write('tempMin: $tempMin, ')
+          ..write('tempMax: $tempMax, ')
+          ..write('tempAvg: $tempAvg, ')
+          ..write('humidity: $humidity, ')
+          ..write('windKmh: $windKmh, ')
+          ..write('rainMm: $rainMm, ')
+          ..write('description: $description, ')
+          ..write('emoji: $emoji, ')
+          ..write('fetchedAt: $fetchedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    key,
+    farmId,
+    farmName,
+    forecastDate,
+    tempMin,
+    tempMax,
+    tempAvg,
+    humidity,
+    windKmh,
+    rainMm,
+    description,
+    emoji,
+    fetchedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedWeatherData &&
+          other.key == this.key &&
+          other.farmId == this.farmId &&
+          other.farmName == this.farmName &&
+          other.forecastDate == this.forecastDate &&
+          other.tempMin == this.tempMin &&
+          other.tempMax == this.tempMax &&
+          other.tempAvg == this.tempAvg &&
+          other.humidity == this.humidity &&
+          other.windKmh == this.windKmh &&
+          other.rainMm == this.rainMm &&
+          other.description == this.description &&
+          other.emoji == this.emoji &&
+          other.fetchedAt == this.fetchedAt);
+}
+
+class CachedWeatherCompanion extends UpdateCompanion<CachedWeatherData> {
+  final Value<String> key;
+  final Value<int> farmId;
+  final Value<String?> farmName;
+  final Value<String> forecastDate;
+  final Value<double?> tempMin;
+  final Value<double?> tempMax;
+  final Value<double?> tempAvg;
+  final Value<double?> humidity;
+  final Value<double?> windKmh;
+  final Value<double?> rainMm;
+  final Value<String?> description;
+  final Value<String?> emoji;
+  final Value<DateTime?> fetchedAt;
+  final Value<int> rowid;
+  const CachedWeatherCompanion({
+    this.key = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.farmName = const Value.absent(),
+    this.forecastDate = const Value.absent(),
+    this.tempMin = const Value.absent(),
+    this.tempMax = const Value.absent(),
+    this.tempAvg = const Value.absent(),
+    this.humidity = const Value.absent(),
+    this.windKmh = const Value.absent(),
+    this.rainMm = const Value.absent(),
+    this.description = const Value.absent(),
+    this.emoji = const Value.absent(),
+    this.fetchedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedWeatherCompanion.insert({
+    required String key,
+    required int farmId,
+    this.farmName = const Value.absent(),
+    required String forecastDate,
+    this.tempMin = const Value.absent(),
+    this.tempMax = const Value.absent(),
+    this.tempAvg = const Value.absent(),
+    this.humidity = const Value.absent(),
+    this.windKmh = const Value.absent(),
+    this.rainMm = const Value.absent(),
+    this.description = const Value.absent(),
+    this.emoji = const Value.absent(),
+    this.fetchedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       farmId = Value(farmId),
+       forecastDate = Value(forecastDate);
+  static Insertable<CachedWeatherData> custom({
+    Expression<String>? key,
+    Expression<int>? farmId,
+    Expression<String>? farmName,
+    Expression<String>? forecastDate,
+    Expression<double>? tempMin,
+    Expression<double>? tempMax,
+    Expression<double>? tempAvg,
+    Expression<double>? humidity,
+    Expression<double>? windKmh,
+    Expression<double>? rainMm,
+    Expression<String>? description,
+    Expression<String>? emoji,
+    Expression<DateTime>? fetchedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (farmId != null) 'farm_id': farmId,
+      if (farmName != null) 'farm_name': farmName,
+      if (forecastDate != null) 'forecast_date': forecastDate,
+      if (tempMin != null) 'temp_min': tempMin,
+      if (tempMax != null) 'temp_max': tempMax,
+      if (tempAvg != null) 'temp_avg': tempAvg,
+      if (humidity != null) 'humidity': humidity,
+      if (windKmh != null) 'wind_kmh': windKmh,
+      if (rainMm != null) 'rain_mm': rainMm,
+      if (description != null) 'description': description,
+      if (emoji != null) 'emoji': emoji,
+      if (fetchedAt != null) 'fetched_at': fetchedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedWeatherCompanion copyWith({
+    Value<String>? key,
+    Value<int>? farmId,
+    Value<String?>? farmName,
+    Value<String>? forecastDate,
+    Value<double?>? tempMin,
+    Value<double?>? tempMax,
+    Value<double?>? tempAvg,
+    Value<double?>? humidity,
+    Value<double?>? windKmh,
+    Value<double?>? rainMm,
+    Value<String?>? description,
+    Value<String?>? emoji,
+    Value<DateTime?>? fetchedAt,
+    Value<int>? rowid,
+  }) {
+    return CachedWeatherCompanion(
+      key: key ?? this.key,
+      farmId: farmId ?? this.farmId,
+      farmName: farmName ?? this.farmName,
+      forecastDate: forecastDate ?? this.forecastDate,
+      tempMin: tempMin ?? this.tempMin,
+      tempMax: tempMax ?? this.tempMax,
+      tempAvg: tempAvg ?? this.tempAvg,
+      humidity: humidity ?? this.humidity,
+      windKmh: windKmh ?? this.windKmh,
+      rainMm: rainMm ?? this.rainMm,
+      description: description ?? this.description,
+      emoji: emoji ?? this.emoji,
+      fetchedAt: fetchedAt ?? this.fetchedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<int>(farmId.value);
+    }
+    if (farmName.present) {
+      map['farm_name'] = Variable<String>(farmName.value);
+    }
+    if (forecastDate.present) {
+      map['forecast_date'] = Variable<String>(forecastDate.value);
+    }
+    if (tempMin.present) {
+      map['temp_min'] = Variable<double>(tempMin.value);
+    }
+    if (tempMax.present) {
+      map['temp_max'] = Variable<double>(tempMax.value);
+    }
+    if (tempAvg.present) {
+      map['temp_avg'] = Variable<double>(tempAvg.value);
+    }
+    if (humidity.present) {
+      map['humidity'] = Variable<double>(humidity.value);
+    }
+    if (windKmh.present) {
+      map['wind_kmh'] = Variable<double>(windKmh.value);
+    }
+    if (rainMm.present) {
+      map['rain_mm'] = Variable<double>(rainMm.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (emoji.present) {
+      map['emoji'] = Variable<String>(emoji.value);
+    }
+    if (fetchedAt.present) {
+      map['fetched_at'] = Variable<DateTime>(fetchedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedWeatherCompanion(')
+          ..write('key: $key, ')
+          ..write('farmId: $farmId, ')
+          ..write('farmName: $farmName, ')
+          ..write('forecastDate: $forecastDate, ')
+          ..write('tempMin: $tempMin, ')
+          ..write('tempMax: $tempMax, ')
+          ..write('tempAvg: $tempAvg, ')
+          ..write('humidity: $humidity, ')
+          ..write('windKmh: $windKmh, ')
+          ..write('rainMm: $rainMm, ')
+          ..write('description: $description, ')
+          ..write('emoji: $emoji, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CachedWeatherAlertsTable extends CachedWeatherAlerts
+    with TableInfo<$CachedWeatherAlertsTable, CachedWeatherAlert> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CachedWeatherAlertsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<int> farmId = GeneratedColumn<int>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flockIdMeta = const VerificationMeta(
+    'flockId',
+  );
+  @override
+  late final GeneratedColumn<int> flockId = GeneratedColumn<int>(
+    'flock_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _flockCodeMeta = const VerificationMeta(
+    'flockCode',
+  );
+  @override
+  late final GeneratedColumn<String> flockCode = GeneratedColumn<String>(
+    'flock_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _forecastDateMeta = const VerificationMeta(
+    'forecastDate',
+  );
+  @override
+  late final GeneratedColumn<String> forecastDate = GeneratedColumn<String>(
+    'forecast_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isCriticalMeta = const VerificationMeta(
+    'isCritical',
+  );
+  @override
+  late final GeneratedColumn<bool> isCritical = GeneratedColumn<bool>(
+    'is_critical',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_critical" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _messageMeta = const VerificationMeta(
+    'message',
+  );
+  @override
+  late final GeneratedColumn<String> message = GeneratedColumn<String>(
+    'message',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    key,
+    farmId,
+    flockId,
+    flockCode,
+    forecastDate,
+    kind,
+    isCritical,
+    message,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cached_weather_alerts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CachedWeatherAlert> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('flock_id')) {
+      context.handle(
+        _flockIdMeta,
+        flockId.isAcceptableOrUnknown(data['flock_id']!, _flockIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_flockIdMeta);
+    }
+    if (data.containsKey('flock_code')) {
+      context.handle(
+        _flockCodeMeta,
+        flockCode.isAcceptableOrUnknown(data['flock_code']!, _flockCodeMeta),
+      );
+    }
+    if (data.containsKey('forecast_date')) {
+      context.handle(
+        _forecastDateMeta,
+        forecastDate.isAcceptableOrUnknown(
+          data['forecast_date']!,
+          _forecastDateMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_forecastDateMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('is_critical')) {
+      context.handle(
+        _isCriticalMeta,
+        isCritical.isAcceptableOrUnknown(data['is_critical']!, _isCriticalMeta),
+      );
+    }
+    if (data.containsKey('message')) {
+      context.handle(
+        _messageMeta,
+        message.isAcceptableOrUnknown(data['message']!, _messageMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_messageMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  CachedWeatherAlert map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CachedWeatherAlert(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      flockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}flock_id'],
+      )!,
+      flockCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}flock_code'],
+      ),
+      forecastDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}forecast_date'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      isCritical: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_critical'],
+      )!,
+      message: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}message'],
+      )!,
+    );
+  }
+
+  @override
+  $CachedWeatherAlertsTable createAlias(String alias) {
+    return $CachedWeatherAlertsTable(attachedDatabase, alias);
+  }
+}
+
+class CachedWeatherAlert extends DataClass
+    implements Insertable<CachedWeatherAlert> {
+  final String key;
+  final int farmId;
+  final int flockId;
+  final String? flockCode;
+  final String forecastDate;
+  final String kind;
+  final bool isCritical;
+  final String message;
+  const CachedWeatherAlert({
+    required this.key,
+    required this.farmId,
+    required this.flockId,
+    this.flockCode,
+    required this.forecastDate,
+    required this.kind,
+    required this.isCritical,
+    required this.message,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['farm_id'] = Variable<int>(farmId);
+    map['flock_id'] = Variable<int>(flockId);
+    if (!nullToAbsent || flockCode != null) {
+      map['flock_code'] = Variable<String>(flockCode);
+    }
+    map['forecast_date'] = Variable<String>(forecastDate);
+    map['kind'] = Variable<String>(kind);
+    map['is_critical'] = Variable<bool>(isCritical);
+    map['message'] = Variable<String>(message);
+    return map;
+  }
+
+  CachedWeatherAlertsCompanion toCompanion(bool nullToAbsent) {
+    return CachedWeatherAlertsCompanion(
+      key: Value(key),
+      farmId: Value(farmId),
+      flockId: Value(flockId),
+      flockCode: flockCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(flockCode),
+      forecastDate: Value(forecastDate),
+      kind: Value(kind),
+      isCritical: Value(isCritical),
+      message: Value(message),
+    );
+  }
+
+  factory CachedWeatherAlert.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CachedWeatherAlert(
+      key: serializer.fromJson<String>(json['key']),
+      farmId: serializer.fromJson<int>(json['farmId']),
+      flockId: serializer.fromJson<int>(json['flockId']),
+      flockCode: serializer.fromJson<String?>(json['flockCode']),
+      forecastDate: serializer.fromJson<String>(json['forecastDate']),
+      kind: serializer.fromJson<String>(json['kind']),
+      isCritical: serializer.fromJson<bool>(json['isCritical']),
+      message: serializer.fromJson<String>(json['message']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'farmId': serializer.toJson<int>(farmId),
+      'flockId': serializer.toJson<int>(flockId),
+      'flockCode': serializer.toJson<String?>(flockCode),
+      'forecastDate': serializer.toJson<String>(forecastDate),
+      'kind': serializer.toJson<String>(kind),
+      'isCritical': serializer.toJson<bool>(isCritical),
+      'message': serializer.toJson<String>(message),
+    };
+  }
+
+  CachedWeatherAlert copyWith({
+    String? key,
+    int? farmId,
+    int? flockId,
+    Value<String?> flockCode = const Value.absent(),
+    String? forecastDate,
+    String? kind,
+    bool? isCritical,
+    String? message,
+  }) => CachedWeatherAlert(
+    key: key ?? this.key,
+    farmId: farmId ?? this.farmId,
+    flockId: flockId ?? this.flockId,
+    flockCode: flockCode.present ? flockCode.value : this.flockCode,
+    forecastDate: forecastDate ?? this.forecastDate,
+    kind: kind ?? this.kind,
+    isCritical: isCritical ?? this.isCritical,
+    message: message ?? this.message,
+  );
+  CachedWeatherAlert copyWithCompanion(CachedWeatherAlertsCompanion data) {
+    return CachedWeatherAlert(
+      key: data.key.present ? data.key.value : this.key,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      flockId: data.flockId.present ? data.flockId.value : this.flockId,
+      flockCode: data.flockCode.present ? data.flockCode.value : this.flockCode,
+      forecastDate: data.forecastDate.present
+          ? data.forecastDate.value
+          : this.forecastDate,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      isCritical: data.isCritical.present
+          ? data.isCritical.value
+          : this.isCritical,
+      message: data.message.present ? data.message.value : this.message,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedWeatherAlert(')
+          ..write('key: $key, ')
+          ..write('farmId: $farmId, ')
+          ..write('flockId: $flockId, ')
+          ..write('flockCode: $flockCode, ')
+          ..write('forecastDate: $forecastDate, ')
+          ..write('kind: $kind, ')
+          ..write('isCritical: $isCritical, ')
+          ..write('message: $message')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    key,
+    farmId,
+    flockId,
+    flockCode,
+    forecastDate,
+    kind,
+    isCritical,
+    message,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CachedWeatherAlert &&
+          other.key == this.key &&
+          other.farmId == this.farmId &&
+          other.flockId == this.flockId &&
+          other.flockCode == this.flockCode &&
+          other.forecastDate == this.forecastDate &&
+          other.kind == this.kind &&
+          other.isCritical == this.isCritical &&
+          other.message == this.message);
+}
+
+class CachedWeatherAlertsCompanion extends UpdateCompanion<CachedWeatherAlert> {
+  final Value<String> key;
+  final Value<int> farmId;
+  final Value<int> flockId;
+  final Value<String?> flockCode;
+  final Value<String> forecastDate;
+  final Value<String> kind;
+  final Value<bool> isCritical;
+  final Value<String> message;
+  final Value<int> rowid;
+  const CachedWeatherAlertsCompanion({
+    this.key = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.flockId = const Value.absent(),
+    this.flockCode = const Value.absent(),
+    this.forecastDate = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.isCritical = const Value.absent(),
+    this.message = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CachedWeatherAlertsCompanion.insert({
+    required String key,
+    required int farmId,
+    required int flockId,
+    this.flockCode = const Value.absent(),
+    required String forecastDate,
+    required String kind,
+    this.isCritical = const Value.absent(),
+    required String message,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       farmId = Value(farmId),
+       flockId = Value(flockId),
+       forecastDate = Value(forecastDate),
+       kind = Value(kind),
+       message = Value(message);
+  static Insertable<CachedWeatherAlert> custom({
+    Expression<String>? key,
+    Expression<int>? farmId,
+    Expression<int>? flockId,
+    Expression<String>? flockCode,
+    Expression<String>? forecastDate,
+    Expression<String>? kind,
+    Expression<bool>? isCritical,
+    Expression<String>? message,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (farmId != null) 'farm_id': farmId,
+      if (flockId != null) 'flock_id': flockId,
+      if (flockCode != null) 'flock_code': flockCode,
+      if (forecastDate != null) 'forecast_date': forecastDate,
+      if (kind != null) 'kind': kind,
+      if (isCritical != null) 'is_critical': isCritical,
+      if (message != null) 'message': message,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CachedWeatherAlertsCompanion copyWith({
+    Value<String>? key,
+    Value<int>? farmId,
+    Value<int>? flockId,
+    Value<String?>? flockCode,
+    Value<String>? forecastDate,
+    Value<String>? kind,
+    Value<bool>? isCritical,
+    Value<String>? message,
+    Value<int>? rowid,
+  }) {
+    return CachedWeatherAlertsCompanion(
+      key: key ?? this.key,
+      farmId: farmId ?? this.farmId,
+      flockId: flockId ?? this.flockId,
+      flockCode: flockCode ?? this.flockCode,
+      forecastDate: forecastDate ?? this.forecastDate,
+      kind: kind ?? this.kind,
+      isCritical: isCritical ?? this.isCritical,
+      message: message ?? this.message,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<int>(farmId.value);
+    }
+    if (flockId.present) {
+      map['flock_id'] = Variable<int>(flockId.value);
+    }
+    if (flockCode.present) {
+      map['flock_code'] = Variable<String>(flockCode.value);
+    }
+    if (forecastDate.present) {
+      map['forecast_date'] = Variable<String>(forecastDate.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (isCritical.present) {
+      map['is_critical'] = Variable<bool>(isCritical.value);
+    }
+    if (message.present) {
+      map['message'] = Variable<String>(message.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CachedWeatherAlertsCompanion(')
+          ..write('key: $key, ')
+          ..write('farmId: $farmId, ')
+          ..write('flockId: $flockId, ')
+          ..write('flockCode: $flockCode, ')
+          ..write('forecastDate: $forecastDate, ')
+          ..write('kind: $kind, ')
+          ..write('isCritical: $isCritical, ')
+          ..write('message: $message, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6104,6 +7395,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $CachedVaccinationsTable(this);
   late final $CachedDailyRecordsTable cachedDailyRecords =
       $CachedDailyRecordsTable(this);
+  late final $CachedWeatherTable cachedWeather = $CachedWeatherTable(this);
+  late final $CachedWeatherAlertsTable cachedWeatherAlerts =
+      $CachedWeatherAlertsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6119,6 +7413,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     cachedNotifications,
     cachedVaccinations,
     cachedDailyRecords,
+    cachedWeather,
+    cachedWeatherAlerts,
   ];
 }
 
@@ -9232,6 +10528,663 @@ typedef $$CachedDailyRecordsTableProcessedTableManager =
       CachedDailyRecord,
       PrefetchHooks Function()
     >;
+typedef $$CachedWeatherTableCreateCompanionBuilder =
+    CachedWeatherCompanion Function({
+      required String key,
+      required int farmId,
+      Value<String?> farmName,
+      required String forecastDate,
+      Value<double?> tempMin,
+      Value<double?> tempMax,
+      Value<double?> tempAvg,
+      Value<double?> humidity,
+      Value<double?> windKmh,
+      Value<double?> rainMm,
+      Value<String?> description,
+      Value<String?> emoji,
+      Value<DateTime?> fetchedAt,
+      Value<int> rowid,
+    });
+typedef $$CachedWeatherTableUpdateCompanionBuilder =
+    CachedWeatherCompanion Function({
+      Value<String> key,
+      Value<int> farmId,
+      Value<String?> farmName,
+      Value<String> forecastDate,
+      Value<double?> tempMin,
+      Value<double?> tempMax,
+      Value<double?> tempAvg,
+      Value<double?> humidity,
+      Value<double?> windKmh,
+      Value<double?> rainMm,
+      Value<String?> description,
+      Value<String?> emoji,
+      Value<DateTime?> fetchedAt,
+      Value<int> rowid,
+    });
+
+class $$CachedWeatherTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedWeatherTable> {
+  $$CachedWeatherTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmName => $composableBuilder(
+    column: $table.farmName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get tempMin => $composableBuilder(
+    column: $table.tempMin,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get tempMax => $composableBuilder(
+    column: $table.tempMax,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get tempAvg => $composableBuilder(
+    column: $table.tempAvg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get humidity => $composableBuilder(
+    column: $table.humidity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get windKmh => $composableBuilder(
+    column: $table.windKmh,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get rainMm => $composableBuilder(
+    column: $table.rainMm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get emoji => $composableBuilder(
+    column: $table.emoji,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get fetchedAt => $composableBuilder(
+    column: $table.fetchedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedWeatherTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedWeatherTable> {
+  $$CachedWeatherTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmName => $composableBuilder(
+    column: $table.farmName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get tempMin => $composableBuilder(
+    column: $table.tempMin,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get tempMax => $composableBuilder(
+    column: $table.tempMax,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get tempAvg => $composableBuilder(
+    column: $table.tempAvg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get humidity => $composableBuilder(
+    column: $table.humidity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get windKmh => $composableBuilder(
+    column: $table.windKmh,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get rainMm => $composableBuilder(
+    column: $table.rainMm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get emoji => $composableBuilder(
+    column: $table.emoji,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get fetchedAt => $composableBuilder(
+    column: $table.fetchedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedWeatherTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedWeatherTable> {
+  $$CachedWeatherTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<int> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<String> get farmName =>
+      $composableBuilder(column: $table.farmName, builder: (column) => column);
+
+  GeneratedColumn<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get tempMin =>
+      $composableBuilder(column: $table.tempMin, builder: (column) => column);
+
+  GeneratedColumn<double> get tempMax =>
+      $composableBuilder(column: $table.tempMax, builder: (column) => column);
+
+  GeneratedColumn<double> get tempAvg =>
+      $composableBuilder(column: $table.tempAvg, builder: (column) => column);
+
+  GeneratedColumn<double> get humidity =>
+      $composableBuilder(column: $table.humidity, builder: (column) => column);
+
+  GeneratedColumn<double> get windKmh =>
+      $composableBuilder(column: $table.windKmh, builder: (column) => column);
+
+  GeneratedColumn<double> get rainMm =>
+      $composableBuilder(column: $table.rainMm, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get emoji =>
+      $composableBuilder(column: $table.emoji, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fetchedAt =>
+      $composableBuilder(column: $table.fetchedAt, builder: (column) => column);
+}
+
+class $$CachedWeatherTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedWeatherTable,
+          CachedWeatherData,
+          $$CachedWeatherTableFilterComposer,
+          $$CachedWeatherTableOrderingComposer,
+          $$CachedWeatherTableAnnotationComposer,
+          $$CachedWeatherTableCreateCompanionBuilder,
+          $$CachedWeatherTableUpdateCompanionBuilder,
+          (
+            CachedWeatherData,
+            BaseReferences<
+              _$AppDatabase,
+              $CachedWeatherTable,
+              CachedWeatherData
+            >,
+          ),
+          CachedWeatherData,
+          PrefetchHooks Function()
+        > {
+  $$CachedWeatherTableTableManager(_$AppDatabase db, $CachedWeatherTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedWeatherTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedWeatherTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CachedWeatherTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<int> farmId = const Value.absent(),
+                Value<String?> farmName = const Value.absent(),
+                Value<String> forecastDate = const Value.absent(),
+                Value<double?> tempMin = const Value.absent(),
+                Value<double?> tempMax = const Value.absent(),
+                Value<double?> tempAvg = const Value.absent(),
+                Value<double?> humidity = const Value.absent(),
+                Value<double?> windKmh = const Value.absent(),
+                Value<double?> rainMm = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String?> emoji = const Value.absent(),
+                Value<DateTime?> fetchedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedWeatherCompanion(
+                key: key,
+                farmId: farmId,
+                farmName: farmName,
+                forecastDate: forecastDate,
+                tempMin: tempMin,
+                tempMax: tempMax,
+                tempAvg: tempAvg,
+                humidity: humidity,
+                windKmh: windKmh,
+                rainMm: rainMm,
+                description: description,
+                emoji: emoji,
+                fetchedAt: fetchedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required int farmId,
+                Value<String?> farmName = const Value.absent(),
+                required String forecastDate,
+                Value<double?> tempMin = const Value.absent(),
+                Value<double?> tempMax = const Value.absent(),
+                Value<double?> tempAvg = const Value.absent(),
+                Value<double?> humidity = const Value.absent(),
+                Value<double?> windKmh = const Value.absent(),
+                Value<double?> rainMm = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<String?> emoji = const Value.absent(),
+                Value<DateTime?> fetchedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedWeatherCompanion.insert(
+                key: key,
+                farmId: farmId,
+                farmName: farmName,
+                forecastDate: forecastDate,
+                tempMin: tempMin,
+                tempMax: tempMax,
+                tempAvg: tempAvg,
+                humidity: humidity,
+                windKmh: windKmh,
+                rainMm: rainMm,
+                description: description,
+                emoji: emoji,
+                fetchedAt: fetchedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedWeatherTable, CachedWeatherData>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CachedWeatherTable,
+                    CachedWeatherData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedWeatherTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedWeatherTable,
+      CachedWeatherData,
+      $$CachedWeatherTableFilterComposer,
+      $$CachedWeatherTableOrderingComposer,
+      $$CachedWeatherTableAnnotationComposer,
+      $$CachedWeatherTableCreateCompanionBuilder,
+      $$CachedWeatherTableUpdateCompanionBuilder,
+      (
+        CachedWeatherData,
+        BaseReferences<_$AppDatabase, $CachedWeatherTable, CachedWeatherData>,
+      ),
+      CachedWeatherData,
+      PrefetchHooks Function()
+    >;
+typedef $$CachedWeatherAlertsTableCreateCompanionBuilder =
+    CachedWeatherAlertsCompanion Function({
+      required String key,
+      required int farmId,
+      required int flockId,
+      Value<String?> flockCode,
+      required String forecastDate,
+      required String kind,
+      Value<bool> isCritical,
+      required String message,
+      Value<int> rowid,
+    });
+typedef $$CachedWeatherAlertsTableUpdateCompanionBuilder =
+    CachedWeatherAlertsCompanion Function({
+      Value<String> key,
+      Value<int> farmId,
+      Value<int> flockId,
+      Value<String?> flockCode,
+      Value<String> forecastDate,
+      Value<String> kind,
+      Value<bool> isCritical,
+      Value<String> message,
+      Value<int> rowid,
+    });
+
+class $$CachedWeatherAlertsTableFilterComposer
+    extends Composer<_$AppDatabase, $CachedWeatherAlertsTable> {
+  $$CachedWeatherAlertsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get flockCode => $composableBuilder(
+    column: $table.flockCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCritical => $composableBuilder(
+    column: $table.isCritical,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get message => $composableBuilder(
+    column: $table.message,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CachedWeatherAlertsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CachedWeatherAlertsTable> {
+  $$CachedWeatherAlertsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get flockId => $composableBuilder(
+    column: $table.flockId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get flockCode => $composableBuilder(
+    column: $table.flockCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCritical => $composableBuilder(
+    column: $table.isCritical,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get message => $composableBuilder(
+    column: $table.message,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CachedWeatherAlertsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CachedWeatherAlertsTable> {
+  $$CachedWeatherAlertsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<int> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<int> get flockId =>
+      $composableBuilder(column: $table.flockId, builder: (column) => column);
+
+  GeneratedColumn<String> get flockCode =>
+      $composableBuilder(column: $table.flockCode, builder: (column) => column);
+
+  GeneratedColumn<String> get forecastDate => $composableBuilder(
+    column: $table.forecastDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<bool> get isCritical => $composableBuilder(
+    column: $table.isCritical,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get message =>
+      $composableBuilder(column: $table.message, builder: (column) => column);
+}
+
+class $$CachedWeatherAlertsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CachedWeatherAlertsTable,
+          CachedWeatherAlert,
+          $$CachedWeatherAlertsTableFilterComposer,
+          $$CachedWeatherAlertsTableOrderingComposer,
+          $$CachedWeatherAlertsTableAnnotationComposer,
+          $$CachedWeatherAlertsTableCreateCompanionBuilder,
+          $$CachedWeatherAlertsTableUpdateCompanionBuilder,
+          (
+            CachedWeatherAlert,
+            BaseReferences<
+              _$AppDatabase,
+              $CachedWeatherAlertsTable,
+              CachedWeatherAlert
+            >,
+          ),
+          CachedWeatherAlert,
+          PrefetchHooks Function()
+        > {
+  $$CachedWeatherAlertsTableTableManager(
+    _$AppDatabase db,
+    $CachedWeatherAlertsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CachedWeatherAlertsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CachedWeatherAlertsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CachedWeatherAlertsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<int> farmId = const Value.absent(),
+                Value<int> flockId = const Value.absent(),
+                Value<String?> flockCode = const Value.absent(),
+                Value<String> forecastDate = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<bool> isCritical = const Value.absent(),
+                Value<String> message = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CachedWeatherAlertsCompanion(
+                key: key,
+                farmId: farmId,
+                flockId: flockId,
+                flockCode: flockCode,
+                forecastDate: forecastDate,
+                kind: kind,
+                isCritical: isCritical,
+                message: message,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required int farmId,
+                required int flockId,
+                Value<String?> flockCode = const Value.absent(),
+                required String forecastDate,
+                required String kind,
+                Value<bool> isCritical = const Value.absent(),
+                required String message,
+                Value<int> rowid = const Value.absent(),
+              }) => CachedWeatherAlertsCompanion.insert(
+                key: key,
+                farmId: farmId,
+                flockId: flockId,
+                flockCode: flockCode,
+                forecastDate: forecastDate,
+                kind: kind,
+                isCritical: isCritical,
+                message: message,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CachedWeatherAlertsTable, CachedWeatherAlert>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CachedWeatherAlertsTable,
+                    CachedWeatherAlert
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CachedWeatherAlertsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CachedWeatherAlertsTable,
+      CachedWeatherAlert,
+      $$CachedWeatherAlertsTableFilterComposer,
+      $$CachedWeatherAlertsTableOrderingComposer,
+      $$CachedWeatherAlertsTableAnnotationComposer,
+      $$CachedWeatherAlertsTableCreateCompanionBuilder,
+      $$CachedWeatherAlertsTableUpdateCompanionBuilder,
+      (
+        CachedWeatherAlert,
+        BaseReferences<
+          _$AppDatabase,
+          $CachedWeatherAlertsTable,
+          CachedWeatherAlert
+        >,
+      ),
+      CachedWeatherAlert,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9256,4 +11209,8 @@ class $AppDatabaseManager {
       $$CachedVaccinationsTableTableManager(_db, _db.cachedVaccinations);
   $$CachedDailyRecordsTableTableManager get cachedDailyRecords =>
       $$CachedDailyRecordsTableTableManager(_db, _db.cachedDailyRecords);
+  $$CachedWeatherTableTableManager get cachedWeather =>
+      $$CachedWeatherTableTableManager(_db, _db.cachedWeather);
+  $$CachedWeatherAlertsTableTableManager get cachedWeatherAlerts =>
+      $$CachedWeatherAlertsTableTableManager(_db, _db.cachedWeatherAlerts);
 }
