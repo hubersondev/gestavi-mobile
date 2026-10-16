@@ -89,6 +89,27 @@ void main() {
     },
   );
 
+  test('organisation en lecture seule (423) : la saisie reste en attente, pas refusée', () async {
+    await queue.enqueue(
+      organisationId: 1,
+      type: 'daily_record',
+      payload: {'flock_id': 7},
+    );
+    when(() => api.post(any(), body: any(named: 'body'))).thenThrow(
+      const ApiException('Organisation en lecture seule', statusCode: 423),
+    );
+
+    expect(
+      await queue.pushQuietly(
+        organisationId: 1,
+        organisationSlug: 'ferme-demo',
+      ),
+      0,
+    );
+    expect(await queue.watchPendingCount(1).first, 1);
+    expect(await queue.rejected(1), isEmpty);
+  });
+
   test(
     'sans réseau, la file reste intacte et pushQuietly n\'échoue pas',
     () async {

@@ -219,7 +219,8 @@ class SyncQueueRepository {
         response,
       );
     } on ApiException catch (e) {
-      if (e.isNetwork) {
+      // Hors ligne ou organisation en lecture seule : la saisie reste en attente
+      if (e.isNetwork || e.isLocked) {
         rethrow;
       }
 
@@ -256,7 +257,7 @@ class SyncQueueRepository {
         organisationSlug: organisationSlug,
       );
     } on ApiException catch (e) {
-      if (e.isNetwork) {
+      if (e.isNetwork || e.isLocked) {
         return 0;
       }
 

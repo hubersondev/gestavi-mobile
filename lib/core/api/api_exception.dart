@@ -22,6 +22,9 @@ class ApiException implements Exception {
 
   bool get isNetwork => statusCode == null;
 
+  /// 423 : organisation en lecture seule côté serveur, la saisie reste en attente.
+  bool get isLocked => statusCode == 423;
+
   String? firstErrorFor(String field) => fieldErrors[field]?.firstOrNull;
 
   @override
